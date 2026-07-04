@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/forms/Input';
 import { RouteCard } from '@/components/brand/RouteCard';
-import { Suspense } from 'react';
 
 function CheckCoverageInner() {
   const searchParams = useSearchParams();
@@ -21,7 +20,6 @@ function CheckCoverageInner() {
   const [submitted, setSubmitted] = useState(false);
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
 
-  // Pre-fill from homepage link
   useEffect(() => {
     const prefilled = searchParams.get('zip');
     if (prefilled) {
@@ -30,7 +28,6 @@ function CheckCoverageInner() {
     }
   }, [searchParams]);
 
-  // Mock routes — in production pulled from Supabase via API
   const generateRoutes = (z: string) => [
     { route: `${z}-C`, place: 'Coral Springs, FL', homes: 812, total: 10, taken: 8, premium: true },
     { route: `${z}-A`, place: 'Coral Springs, FL', homes: 945, total: 10, taken: 5, premium: false },
@@ -55,7 +52,6 @@ function CheckCoverageInner() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Send to lead API with "booking" formType
     const res = await fetch('/api/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -72,32 +68,25 @@ function CheckCoverageInner() {
       }),
     });
     const data = await res.json();
-    if (data.paymentLink) {
-      setPaymentLink(data.paymentLink);
-    }
+    if (data.paymentLink) setPaymentLink(data.paymentLink);
     setSubmitted(true);
   };
 
-  // Filter by trade
-  const filterByTrade = (route: { route: string }) => {
-    if (!trade) return true;
-    // In production: match trade to route premium/type
-    return true;
-  };
+  const filterByTrade = (route: { route: string }) => !trade || true;
 
   return (
     <div className="mh-animate-rise">
-      {/* HERO */}
+      {/* HERO + INSTRUCTIONS */}
       <div style={{ background: 'var(--ink-900)', padding: '64px clamp(20px, 5vw, 56px) 56px' }}>
         <div style={{ maxWidth: 1120, margin: '0 auto' }}>
           <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--signal-400)' }}>
-            Live inventory
+            Real-Time Route Inventory
           </span>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(38px, 4.6vw, 56px)', lineHeight: 1, letterSpacing: '-0.03em', margin: '14px 0 0', color: '#fff', maxWidth: 720 }}>
-            Find open routes near you.
+          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(38px, 4.6vw, 56px)', lineHeight: 1, letterSpacing: '-0.03em', margin: '14px 0 0', color: '#fff', maxWidth: 780 }}>
+            Find Open USPS Carrier Routes Near You
           </h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 18, lineHeight: 1.55, color: 'var(--text-on-ink-muted)', margin: '18px 0 0', maxWidth: 540 }}>
-            Search your area. See available USPS routes with homes, price, and slots left. Claim yours before a neighbor does.
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 18, lineHeight: 1.55, color: 'var(--text-on-ink-muted)', margin: '18px 0 0', maxWidth: 600 }}>
+            Enter your ZIP code to see every available carrier route in your service area. Claim a slot (max 10 advertisers per route) before a neighbor does. All-in pricing from $0.60/home — design, printing, and USPS postage included.
           </p>
 
           {/* Search bar */}
@@ -124,13 +113,13 @@ function CheckCoverageInner() {
             </div>
             <div style={{ flex: 1, minWidth: 180 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-                <label style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                <label style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-on-ink-muted)' }}>
                   Your trade
                 </label>
                 <select
                   value={trade}
                   onChange={(e) => setTrade(e.target.value)}
-                  style={{ background: 'var(--paper-50)', border: '1px solid var(--border-soft)', borderRadius: 'var(--radius-md)', padding: '12px 16px', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 14, color: 'var(--text-body)', cursor: 'pointer' }}
+                  style={{ background: 'var(--paper-50)', border: '1px solid var(--border-on-ink)', borderRadius: 'var(--radius-md)', padding: '12px 16px', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 14, color: '#fff', cursor: 'pointer' }}
                 >
                   <option value="">Any trade</option>
                   <option>Roofing</option>
@@ -148,6 +137,26 @@ function CheckCoverageInner() {
               Search routes
             </Button>
           </form>
+
+          {/* Quick instructions */}
+          {!searched && (
+            <div style={{ marginTop: 48, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, padding: 28, background: 'rgba(245,234,228,0.03)', border: '1px solid var(--border-on-ink)', borderRadius: 'var(--radius-lg)' }}>
+              {[
+                { num: '1', title: 'Enter your ZIP', desc: 'Start with the ZIP where you want to mail.' },
+                { num: '2', title: 'Browse open routes', desc: 'See homes per route, slots left, and pricing.' },
+                { num: '3', title: 'Claim a slot', desc: 'Pick your route. Max 10 advertisers per route.' },
+                { num: '4', title: 'Approve & mail', desc: 'Approve design in 48hr. In mailboxes in 7-10 days.' },
+              ].map((step) => (
+                <div key={step.num}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--signal-400)', marginBottom: 8 }}>
+                    Step {step.num}
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: '#fff', marginBottom: 4 }}>{step.title}</div>
+                  <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--text-on-ink-muted)', lineHeight: 1.5 }}>{step.desc}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -157,10 +166,10 @@ function CheckCoverageInner() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
             <div>
               <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--signal-500)' }}>
-                Open near {zip || 'you'}
+                Open near {zip}
               </span>
               <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(26px, 3vw, 34px)', letterSpacing: '-0.02em', margin: '8px 0 0', color: 'var(--text-strong)' }}>
-                {trade ? `${trade} routes` : 'Available routes'}
+                {trade ? `${trade} routes` : 'Available carrier routes'}
               </h2>
             </div>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--text-muted)', maxWidth: 400 }}>
@@ -168,7 +177,7 @@ function CheckCoverageInner() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
             {generateRoutes(zip || '33076').filter(filterByTrade).map((r) => (
               <RouteCard key={r.route} {...r} onClaim={() => handleClaim(r.route)} />
             ))}
@@ -183,10 +192,10 @@ function CheckCoverageInner() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr', gap: 48, alignItems: 'start' }}>
               <div>
                 <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--signal-400)' }}>
-                  Reserve route
+                  Reserve your slot
                 </span>
                 <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(28px, 3.2vw, 38px)', letterSpacing: '-0.02em', margin: '12px 0 20px', color: '#fff' }}>
-                  Finish your claim.
+                  Lock In Your Route — Before Someone Else Does
                 </h2>
                 {selectedRoute && (
                   <div style={{ background: 'var(--ink-700)', border: '1px solid var(--border-on-ink)', borderRadius: 'var(--radius-lg)', padding: 24 }}>
@@ -197,25 +206,18 @@ function CheckCoverageInner() {
                       {selectedRoute}
                     </div>
                     <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--text-on-ink-muted)', marginTop: 8 }}>
-                      Fill out your info. You'll be taken to secure checkout to lock it in.
+                      Fill out your info. Take it to secure checkout to lock it in. Only 10 advertisers per route — so the sooner you book, the longer you keep the slot.
                     </div>
                   </div>
                 )}
                 <div style={{ marginTop: 24, fontFamily: 'var(--font-body)', fontSize: 13.5, color: 'var(--text-on-ink-muted)', lineHeight: 1.6 }}>
-                  After payment, we'll email you within 24 hours to collect your offer, logo, and contact info for the postcard.
+                  After payment, we email you within 24 hours to collect your offer, logo, and contact info for the postcard. Design proofs turn around in 48 hours. In mailboxes within 7-10 days.
                 </div>
               </div>
 
               <form
                 onSubmit={handleSubmit}
-                style={{
-                  background: 'var(--surface-card)',
-                  borderRadius: 'var(--radius-lg)',
-                  padding: 32,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 16,
-                }}
+                style={{ background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: 32, display: 'flex', flexDirection: 'column', gap: 16 }}
               >
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <Input label="Name" required value={name} onChange={(e) => setName(e.target.value)} />
@@ -253,7 +255,7 @@ function CheckCoverageInner() {
                   Route pricing
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--text-body)' }}>
-                  <span>Standard slot</span>
+                  <span>Standard slot (all-in)</span>
                   <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>$0.60 / home</span>
                 </div>
 
@@ -291,14 +293,60 @@ function CheckCoverageInner() {
         </div>
       )}
 
+      {/* FAQ SECTION */}
+      <section style={{ background: 'var(--surface-sunken)', padding: '64px 0' }}>
+        <div style={{ maxWidth: 1120, margin: '0 auto', padding: '0 clamp(20px, 5vw, 56px)' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(26px, 3vw, 36px)', letterSpacing: '-0.02em', margin: '0 0 32px', color: 'var(--text-strong)' }}>
+            Frequently Asked Questions About Routes & Booking
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 28 }}>
+            {[
+              {
+                q: 'How do I find available routes?',
+                a: "Enter your ZIP code in the search bar above. We'll show you every open carrier route in that area with details: total homes, slots still available, and estimated cost. Click any route to claim a slot.",
+              },
+              {
+                q: 'How many advertisers can be on one route?',
+                a: "Routes are capped at 10 advertisers per mailing cycle. That's it. Your postcard stays visible — not buried in a stack of 50 other mailers. The more slots that are claimed, the more urgency to book.",
+              },
+              {
+                q: 'Can I book multiple routes at once?',
+                a: "Yes. Claim as many routes as you want in a single session. Most clients start with 2-3 routes to test response, then scale to 5-10 routes once they see what works.",
+              },
+              {
+                q: "Do I need to provide my own mailing list?",
+                a: "No — that's the whole point of EDDM. USPS already has every address on every carrier route mapped out. You pick a route, and we deliver to every home on that route. No list, no addresses, no paperwork.",
+              },
+              {
+                q: 'Can I reorder a route I already mailed?',
+                a: "Absolutely. You can reorder any route anytime — as long as there are still ad slots available. Most clients mail a route 2-3 times over several months to build recognition. Reorders ship faster since we already have your design on file.",
+              },
+              {
+                q: 'What happens after I claim a route?',
+                a: "You fill out the form above with your contact info. We email you a design brief to collect your offer, logo, and images. Within 48 hours we send you a proof. Once you approve, we print and queue the mailing for the next USPS EDDM date. Typical total turnaround: 7-10 days.",
+              },
+            ].map((faq, i) => (
+              <div key={i}>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'var(--fs-h4)', letterSpacing: '-0.01em', margin: '0 0 8px', color: 'var(--text-strong)' }}>
+                  {faq.q}
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-body)', lineHeight: 'var(--lh-body)', color: 'var(--text-muted)', margin: 0 }}>
+                  {faq.a}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* EMPTY STATE if no zip entered yet */}
       {!searched && (
         <div style={{ maxWidth: 680, margin: '0 auto', padding: '80px clamp(20px, 5vw, 56px)', textAlign: 'center' }}>
           <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(26px, 3vw, 34px)', color: 'var(--text-strong)', margin: '0 0 12px' }}>
-            Enter a ZIP to see routes.
+            Enter a ZIP code above to see routes
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 16, color: 'var(--text-muted)', margin: 0 }}>
-            We'll show you every open carrier route within that area.
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 16, color: 'var(--text-muted)', margin: 0, maxWidth: 480, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.6 }}>
+            Or pick a vertical (roofing, HVAC, etc.) in the dropdown to filter routes by trade. We'll show you every open carrier route within that ZIP.
           </p>
         </div>
       )}

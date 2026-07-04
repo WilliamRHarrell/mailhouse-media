@@ -1,384 +1,542 @@
 import Link from 'next/link';
-import { PostcardPreview } from '@/components/brand/PostcardPreview';
+import { Button } from '@/components/ui/Button';
 
 export default function HomePage() {
   return (
     <div className="mh-animate-rise">
       {/* HERO */}
-      <div
+      <section
         style={{
           position: 'relative',
           overflow: 'hidden',
           background: 'var(--ink-900)',
-          padding: '64px clamp(20px, 5vw, 56px) 72px',
+          color: '#fff',
+          padding: 'var(--space-20) 0',
         }}
       >
-        <svg
-          viewBox="0 0 1200 400"
-          preserveAspectRatio="xMidYMid slice"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.06, pointerEvents: 'none' }}
-        >
-          <path d="M-40 320 C 220 240 320 360 560 260 S 940 140 1240 210" fill="none" stroke="#f5eae4" strokeWidth="2" strokeDasharray="2 10" strokeLinecap="round" />
-          <path d="M-40 160 C 260 90 360 210 620 120 S 980 40 1240 90" fill="none" stroke="#f5eae4" strokeWidth="2" strokeDasharray="2 10" strokeLinecap="round" />
-        </svg>
-        <div
-          style={{
-            position: 'relative',
-            display: 'grid',
-            gridTemplateColumns: '1.04fr 0.96fr',
-            gap: 48,
-            alignItems: 'center',
-            maxWidth: 1120,
-            margin: '0 auto',
-          }}
-        >
-          <div>
-            {/* Scarcity badge */}
+        <div className="container" style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+          <div style={{ maxWidth: 800 }}>
             <div
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 9,
-                background: 'rgba(254,0,50,0.13)',
-                border: '1px solid rgba(254,0,50,0.32)',
-                borderRadius: 'var(--radius-pill)',
-                padding: '6px 12px',
-                marginBottom: 20,
-              }}
-            >
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  background: 'var(--signal-500)',
-                  animation: 'mh-pulse 1.8s ease-in-out infinite',
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 700,
-                  fontSize: 11,
-                  letterSpacing: '0.06em',
-                  color: 'var(--paper-100)',
-                }}
-              >
-                8 SLOTS LEFT · ROUTE 33076-C
-              </span>
-            </div>
-
-            <span
-              style={{
                 fontFamily: 'var(--font-mono)',
+                fontSize: 'var(--fs-body-sm)',
                 fontWeight: 700,
-                fontSize: 11.5,
-                letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: 'var(--signal-400)',
-                display: 'block',
+                letterSpacing: '0.1em',
+                color: 'var(--signal-500)',
+                marginBottom: 'var(--space-4)',
               }}
             >
-              Advertise to your local customers
-            </span>
-            <h1
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 900,
-                fontSize: 'clamp(40px, 5vw, 60px)',
-                lineHeight: 0.98,
-                letterSpacing: '-0.03em',
-                margin: '14px 0 0',
-                color: '#fff',
-              }}
-            >
-              Advertise to every home
-              <br />
-              on your street.
+              EDDM Direct Mail Advertising
+            </div>
+            <h1 style={heroH1}>
+              Reach Every Mailbox in Your Target Neighborhood
             </h1>
             <p
               style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: 18.5,
-                lineHeight: 1.55,
-                color: 'var(--text-on-ink-muted)',
-                margin: '20px 0 0',
-                maxWidth: 470,
+                fontSize: 'var(--fs-body-lg)',
+                lineHeight: 'var(--lh-body)',
+                color: 'var(--paper-100)',
+                marginBottom: 'var(--space-8)',
               }}
             >
-              A 9×12 postcard in every mailbox on the USPS routes you pick. Can't be blocked, muted, or scrolled past. We design, print, and mail it — you book the jobs.
+              Skip the digital noise. Our EDDM (Every Door Direct Mail) service puts your 9×12 postcard in every mailbox on the carrier routes you choose. No ad blockers. No scrolling past. Just real mail, real responses, and real jobs. Design, printing, and USPS postage all included — starting at just $0.06 per home.
             </p>
-
-            {/* CTA — go to /check-coverage */}
-            <Link href="/check-coverage">
-              <div
-                style={{
-                  marginTop: 26,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  fontSize: 18,
-                  padding: '16px 32px',
-                  background: 'var(--signal-500)',
-                  color: '#fff',
-                  borderRadius: 'var(--radius-md)',
-                  border: '2px solid var(--signal-500)',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s',
-                }}
-              >
-                Check my coverage →
-              </div>
+            <Link href="/check-coverage" style={ctaBtn}>
+              See Available Routes Near You →
             </Link>
           </div>
-
-          {/* Postcard hero visual */}
-          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 360 }}>
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '6%',
-                zIndex: 3,
-                width: 100,
-                height: 100,
-                borderRadius: '50%',
-                background: 'var(--signal-500)',
-                boxShadow: 'var(--shadow-signal)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transform: 'rotate(-8deg)',
-              }}
-            >
-              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 25, color: '#fff', lineHeight: 1 }}>
-                2–5%
-              </span>
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 700,
-                  fontSize: 8,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.9)',
-                  marginTop: 2,
-                }}
-              >
-                Response
-              </span>
-            </div>
-            <div style={{ transform: 'rotate(4deg)', zIndex: 2 }}>
-              <PostcardPreview
-                headline="NEED A NEW ROOF?"
-                offer="$500 off full replacement"
-                business="Reyes Roofing"
-                phone="(954) 555-0148"
-                width={440}
-              />
-            </div>
-            <div style={{ position: 'absolute', bottom: -18, right: '2%', transform: 'rotate(-6deg)', zIndex: 1 }}>
-              <PostcardPreview
-                headline="SPRING TUNE-UP"
-                offer="$89 A/C check"
-                business="Cool Breeze HVAC"
-                phone="(954) 555-0199"
-                accent="var(--navy-400)"
-                width={240}
-              />
-            </div>
-          </div>
         </div>
-      </div>
+      </section>
 
       {/* PROOF BAND */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', background: 'var(--signal-500)' }}>
-        <div style={{ padding: '24px clamp(20px, 4vw, 44px)', color: '#fff' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 30, letterSpacing: '-0.02em' }}>
-            $0.06<span style={{ fontSize: 15, opacity: 0.85 }}> / home</span>
-          </div>
-          <div style={{ fontFamily: 'var(--font-body)', fontSize: 13.5, color: 'rgba(255,255,255,0.85)', marginTop: 3 }}>
-            Cheapest customer acquisition in your market
+      <section style={proofBand}>
+        <div className="container" style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+          <div style={proofGrid}>
+            <div style={proofItem}>
+              <div style={proofNumber}>$0.06/home</div>
+              <div style={proofLabel}>"Lowest cost-per-impression in local advertising"</div>
+            </div>
+            <div style={proofItem}>
+              <div style={proofNumber}>100% Delivery Rate</div>
+              <div style={proofLabel}>"Every home on your route gets your postcard"</div>
+            </div>
+            <div style={proofItem}>
+              <div style={proofNumber}>5-9% Average Response Rate</div>
+              <div style={proofLabel}>"Compare that to 0.1% for Facebook ads"</div>
+            </div>
+            <div style={proofItem}>
+              <div style={proofNumber}>48-Hour Turnaround</div>
+              <div style={proofLabel}>"From concept to print-ready design"</div>
+            </div>
           </div>
         </div>
-        <div style={{ padding: '24px clamp(20px, 4vw, 44px)', color: '#fff', borderLeft: '1px solid rgba(255,255,255,0.22)' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 30, letterSpacing: '-0.02em' }}>100%</div>
-          <div style={{ fontFamily: 'var(--font-body)', fontSize: 13.5, color: 'rgba(255,255,255,0.85)', marginTop: 3 }}>
-            Of doors on every route you claim
-          </div>
-        </div>
-        <div style={{ padding: '24px clamp(20px, 4vw, 44px)', color: '#fff', borderLeft: '1px solid rgba(255,255,255,0.22)' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 30, letterSpacing: '-0.02em' }}>48hr</div>
-          <div style={{ fontFamily: 'var(--font-body)', fontSize: 13.5, color: 'rgba(255,255,255,0.85)', marginTop: 3 }}>
-            From your offer to print-ready artwork
-          </div>
-        </div>
-      </div>
+      </section>
 
       {/* HOW IT WORKS TEASER */}
-      <div style={{ maxWidth: 1120, margin: '0 auto', padding: '80px clamp(20px, 5vw, 56px) 20px' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap', marginBottom: 36 }}>
-          <div>
-            <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--signal-500)' }}>
-              How it works
-            </span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(30px, 3.6vw, 42px)', letterSpacing: '-0.02em', margin: '10px 0 0', color: 'var(--text-strong)' }}>
-              You pick the route. We do the rest.
-            </h2>
-          </div>
-          <a href="/how" style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 15, color: 'var(--signal-600)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            See the full process →
-          </a>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 18 }}>
-          {[
-            { num: '01', title: 'Pick your routes', body: 'Search your area and claim the USPS routes you want.', icon: '📍' },
-            { num: '02', title: "We design it", body: 'Send us your offer. Print-ready 9×12 artwork in 48 hours.', icon: '🎨' },
-            { num: '03', title: 'We print & mail', body: 'We print on heavy stock and drop it USPS EDDM to every door.', icon: '📮' },
-            { num: '04', title: 'You book jobs', body: 'Track responses with a dedicated number and QR code.', icon: '📈' },
-          ].map((s) => (
-            <div
-              key={s.num}
-              style={{
-                background: 'var(--surface-card)',
-                border: '1px solid var(--border-hairline)',
-                borderRadius: 'var(--radius-lg)',
-                boxShadow: 'var(--shadow-sm)',
-                padding: 22,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                <span
-                  style={{
-                    display: 'inline-flex',
-                    width: 42,
-                    height: 42,
-                    borderRadius: 'var(--radius-md)',
-                    background: 'var(--ink-900)',
-                    color: 'var(--paper-100)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 20,
-                  }}
-                >
-                  {s.icon}
-                </span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 13, color: 'var(--text-faint)' }}>{s.num}</span>
-              </div>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, letterSpacing: '-0.01em', margin: '0 0 6px', color: 'var(--text-strong)' }}>
-                {s.title}
-              </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, lineHeight: 1.5, color: 'var(--text-muted)', margin: 0 }}>{s.body}</p>
+      <section style={section}>
+        <div className="container" style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+          <div style={sectionHeader}>
+            <div>
+              <div style={eyebrow}>How Our EDDM Service Works</div>
+              <h2 style={sectionH2}>Four Simple Steps to Reach Every Home in Your Area</h2>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* AI TARGETING TEASER */}
-      <div style={{ maxWidth: 1120, margin: '0 auto', padding: '40px clamp(20px, 5vw, 56px) 60px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, alignItems: 'center' }}>
-          <div>
-            <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--signal-500)' }}>
-              New · AI-powered targeting
-            </span>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(28px, 3.4vw, 40px)', letterSpacing: '-0.02em', margin: '10px 0 16px', color: 'var(--text-strong)' }}>
-              Hail hit your area? We'll find the right routes for you.
-            </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 16, lineHeight: 1.55, color: 'var(--text-muted)', margin: '0 0 24px', maxWidth: 500 }}>
-              Describe what you're looking for — homes over $X in the last area to get a storm — and we'll pull a custom carrier route list built around that event.
-            </p>
-            <a href="/ai-targeting">
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  fontSize: 16,
-                  padding: '12px 24px',
-                  background: 'var(--signal-500)',
-                  color: '#fff',
-                  borderRadius: 'var(--radius-md)',
-                }}
-              >
-                Try AI targeting →
-              </div>
-            </a>
+            <Link href="/how" style={link}>
+              View Our Complete Process Guide →
+            </Link>
           </div>
-          <div style={{ background: 'var(--ink-900)', borderRadius: 'var(--radius-lg)', padding: 24, border: '1px solid var(--border-on-ink)' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-on-ink-muted)', marginBottom: 16 }}>
-              Example request
-            </div>
-            {['Homes over $400K', 'Last NC area with 2" hail', 'Last 30 days', 'Owner-occupied only'].map((t) => (
-              <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--border-on-ink)' }}>
-                <span style={{ color: 'var(--signal-400)', fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 12 }}>✓</span>
-                <span style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--paper-100)' }}>{t}</span>
+          <p style={sectionIntro}>
+            Most local businesses waste money on Facebook and Google ads that get ignored. With Mailhouse Media's EDDM service, you skip the digital clutter and put your offer directly in front of potential customers — in their mailbox. Here's how we make it easy:
+          </p>
+          <div style={stepsGrid}>
+            {[
+              {
+                num: '01',
+                title: 'Choose Your Route',
+                body: 'Use our interactive map to find available carrier routes in your service area. See exactly how many homes are on each route and how many ad slots are still open (we cap routes at 10 advertisers max).',
+              },
+              {
+                num: '02',
+                title: "We Design Your Postcard",
+                body: 'Send us your offer, logo, and any images. Our designers create a professional 9×12 postcard that stands out in the mailbox. Unlimited revisions until you love it.',
+              },
+              {
+                num: '03',
+                title: 'We Print & Mail',
+                body: 'Once you approve the design, we print on premium 14pt card stock and coordinate with USPS for the next available EDDM mailing date. No trips to the post office, no address lists to pull.',
+              },
+              {
+                num: '04',
+                title: 'Track Your Response',
+                body: 'Every postcard gets a unique tracking number and QR code. See exactly which routes drove calls, text messages, and website visits. Reorder your best-performing routes anytime.',
+              },
+            ].map((step) => (
+              <div key={step.num} style={stepCard}>
+                <div style={stepNum}>{step.num}</div>
+                <h3 style={stepTitle}>{step.title}</h3>
+                <p style={stepBody}>{step.body}</p>
               </div>
             ))}
-            <div style={{ marginTop: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--text-on-ink-muted)' }}>Matches found</span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 22, color: 'var(--signal-400)' }}>3,420 homes</span>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section style={{ ...section, background: 'var(--surface-sunken)', padding: 'var(--space-16) 0' }}>
+        <div className="container" style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+          <h2 style={faqH2}>Frequently Asked Questions About EDDM Direct Mail</h2>
+          <div style={faqGrid}>
+            {[
+              {
+                q: 'What is EDDM and how does it work?',
+                a: "EDDM (Every Door Direct Mail) is a USPS service that lets businesses send mail to every address on a carrier route without needing a mailing list. You choose a USPS carrier route, and your postcard gets delivered to every mailbox on that route — homes and businesses alike. It's perfect for local service businesses like roofing, HVAC, cleaning, and home improvement.",
+              },
+              {
+                q: 'How much does EDDM direct mail cost?',
+                a: "Our EDDM service includes everything — design, printing, and USPS postage — for just $0.06 per home. For a typical route of 800-900 homes, that's $48-$54 total. Compare that to Facebook or Google ads, where you pay per impression with no guarantee anyone actually sees your message.",
+              },
+              {
+                q: "What's the average response rate for direct mail?",
+                a: 'Industry data shows EDDM and direct mail get 5-9% response rates, compared to 0.1% for digital ads. That\'s 20-50x better results. With EDDM, your postcard lands in every mailbox — there\'s no algorithm deciding who sees it. For local service businesses, even a 1-2% response rate can mean several high-value jobs from a single mailing.',
+              },
+              {
+                q: 'How long does it take to get my postcard in mailboxes?',
+                a: "Once you approve the design (usually within 48 hours), we queue your mailing for the next available USPS EDDM date. Typical turnaround is 7-10 business days from approval to delivery. We'll confirm the exact delivery date before we print.",
+              },
+              {
+                q: 'Can I target specific types of homes or demographics?',
+                a: "EDDM uses full carrier routes — you can't filter by income, home value, or age within a route. If you need demographic targeting, check out our Targeted Mail List service, which lets you filter by homeowner status, property value, and more for $0.11/home.",
+              },
+            ].map((faq, i) => (
+              <div key={i} style={faqItem}>
+                <h3 style={faqQ}>{faq.q}</h3>
+                <p style={faqA}>{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* AI TARGETING TEASER */}
+      <section style={{ ...section, background: 'var(--surface-card)' }}>
+        <div className="container" style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+          <div style={aiTeaserGrid}>
+            <div>
+              <div style={eyebrow}>AI-Powered Event Targeting</div>
+              <h2 style={sectionH2}>Hail hit your neighborhood? Find the right homes automatically</h2>
+              <p style={sectionIntro}>
+                Our AI system monitors weather events, new closings, and market signals in real time. Describe your ideal customer — "homeowners with 15+ year-old roofs in zip codes hit by hail last week" — and we'll build the perfect mailing list. No manual research required.
+              </p>
+              <Link href="/ai-targeting" style={secondaryCta}>
+                Explore AI Targeting →
+              </Link>
+            </div>
+            <div style={aiCard}>
+              <h3 style={aiCardTitle}>Example Request:</h3>
+              <ul style={aiCardList}>
+                <li>Homes over $400K</li>
+                <li>Last NC area with 2" hail</li>
+                <li>Last 30 days</li>
+                <li>Owner-occupied only</li>
+              </ul>
+              <div style={aiCardResult}>
+                <div style={aiCardResultLabel}>Matches found:</div>
+                <div style={aiCardResultNumber}>3,420 homes</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* COMPARISON */}
-      <div style={{ background: 'var(--ink-900)', color: 'var(--paper-100)', marginTop: 40 }}>
-        <div style={{ maxWidth: 1120, margin: '0 auto', padding: '76px clamp(20px, 5vw, 56px)' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--signal-400)' }}>
-            Mailbox vs. the feed
-          </span>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(30px, 3.6vw, 42px)', letterSpacing: '-0.02em', margin: '12px 0 40px', color: '#fff', maxWidth: 640 }}>
-            Digital ads get skipped. Postcards get read at the kitchen table.
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-            <div style={{ background: 'rgba(245,234,228,0.05)', border: '1px solid var(--border-on-ink)', borderRadius: 'var(--radius-lg)', padding: 26 }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-on-ink-muted)', marginBottom: 18 }}>
-                A digital impression
-              </div>
-              {['0.1% average response rate', 'Blocked, muted, or scrolled past', 'Auction prices that climb every quarter', 'Competing with global brands'].map((t) => (
-                <div key={t} style={{ display: 'flex', gap: 10, fontFamily: 'var(--font-body)', fontSize: 15, color: 'var(--text-on-ink-muted)', marginBottom: 12 }}>
-                  <span style={{ color: 'var(--signal-400)' }}>✕</span> {t}
-                </div>
-              ))}
+      <section style={{ ...section, background: 'var(--surface-ink)' }}>
+        <div className="container" style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+          <div style={sectionHeader}>
+            <div>
+              <div style={eyebrow}>Direct Mail vs. Digital Ads</div>
+              <h2 style={sectionH2}>Why Local Businesses Choose Mailhouse Media Over Facebook</h2>
             </div>
-            <div style={{ background: 'var(--paper-100)', borderRadius: 'var(--radius-lg)', padding: 26, boxShadow: 'var(--shadow-lg)' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--signal-600)', marginBottom: 18 }}>
-                A Mailhouse postcard
-              </div>
-              {['2–5% response rate — 20–50× digital', 'Physically handled by every household', 'Flat ~$0.06 per home, all-in', "You own the route — neighbors can't buy in"].map((t) => (
-                <div key={t} style={{ display: 'flex', gap: 10, fontFamily: 'var(--font-body)', fontSize: 15, color: 'var(--text-body)', marginBottom: 12 }}>
-                  <span style={{ color: 'var(--success)' }}>✓</span> {t}
-                </div>
-              ))}
+          </div>
+          <div style={comparisonGrid}>
+            <div style={comparisonCard}>
+              <h3 style={comparisonTitle}>Facebook/Google Ads</h3>
+              <ul style={comparisonList}>
+                <li>
+                  <span style={comparisonX}>✕</span>
+                  <span>0.1% average response rate</span>
+                </li>
+                <li>
+                  <span style={comparisonX}>✕</span>
+                  <span>Blocked, muted, or scrolled past</span>
+                </li>
+                <li>
+                  <span style={comparisonX}>✕</span>
+                  <span>Auction prices that climb every quarter</span>
+                </li>
+                <li>
+                  <span style={comparisonX}>✕</span>
+                  <span>Competing with global brands</span>
+                </li>
+              </ul>
+            </div>
+            <div style={{ ...comparisonCard, background: 'var(--paper-100)' }}>
+              <h3 style={{ ...comparisonTitle, color: 'var(--text-strong)' }}>Mailhouse EDDM</h3>
+              <ul style={comparisonList}>
+                <li>
+                  <span style={comparisonCheck}>✓</span>
+                  <span>5-9% response rate — 20-50× digital</span>
+                </li>
+                <li>
+                  <span style={comparisonCheck}>✓</span>
+                  <span>Physically handled by every household</span>
+                </li>
+                <li>
+                  <span style={comparisonCheck}>✓</span>
+                  <span>Flat $0.06 per home, all-in</span>
+                </li>
+                <li>
+                  <span style={comparisonCheck}>✓</span>
+                  <span>100% delivery, no algorithm</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* TESTIMONIAL */}
-      <div style={{ maxWidth: 860, margin: '0 auto', padding: '76px clamp(20px, 5vw, 56px)', textAlign: 'center' }}>
-        <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--signal-500)', marginBottom: 20 }}>
-          Booked jobs, not impressions
+      <section style={section}>
+        <div className="container" style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+          <blockquote style={testimonial}>
+            <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--fs-h1)', fontWeight: 700, marginBottom: 'var(--space-4)' }}>
+              "We mailed two routes in March and booked 14 roof jobs off one postcard. It paid for the whole year of mailings in a week."
+            </p>
+            <footer style={testimonialFooter}>
+              <div>
+                <div style={{ fontWeight: 600 }}>Javier Reyes</div>
+                <div style={{ fontSize: 'var(--fs-body)', color: 'var(--text-muted)' }}>Owner, Reyes Roofing · Coral Springs, FL</div>
+              </div>
+            </footer>
+          </blockquote>
         </div>
-        <p style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(22px, 3vw, 30px)', lineHeight: 1.28, letterSpacing: '-0.015em', color: 'var(--text-strong)', margin: 0 }}>
-          "We mailed two routes in March and booked 14 roof jobs off one postcard. It paid for the whole year of mailings in a week."
-        </p>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 26 }}>
-          <span style={{ display: 'inline-flex', width: 44, height: 44, borderRadius: '50%', background: 'var(--navy-500)', color: '#fff', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 16 }}>
-            JR
-          </span>
-          <div style={{ textAlign: 'left' }}>
-            <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 15, color: 'var(--text-strong)' }}>Javier Reyes</div>
-            <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--text-muted)' }}>Owner, Reyes Roofing · Coral Springs, FL</div>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }
+
+// Styles
+const heroH1: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-display-lg)',
+  fontWeight: 700,
+  lineHeight: 'var(--lh-tight)',
+  marginBottom: 'var(--space-6)',
+};
+
+const ctaBtn: React.CSSProperties = {
+  display: 'inline-block',
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-body-lg)',
+  fontWeight: 700,
+  padding: 'var(--space-4) var(--space-8)',
+  background: 'var(--signal-500)',
+  color: '#fff',
+  borderRadius: 'var(--radius-sm)',
+  textDecoration: 'none',
+};
+
+const secondaryCta: React.CSSProperties = {
+  display: 'inline-block',
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-body)',
+  fontWeight: 700,
+  padding: 'var(--space-2) var(--space-2)',
+  color: 'var(--signal-600)',
+  textDecoration: 'none',
+};
+
+const proofBand: React.CSSProperties = {
+  background: 'var(--surface-ink)',
+  color: '#fff',
+  padding: 'var(--space-12) 0',
+};
+
+const proofGrid: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+  gap: 'var(--space-6)',
+};
+
+const proofItem: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 'var(--space-2)',
+};
+
+const proofNumber: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-h1)',
+  fontWeight: 700,
+};
+
+const proofLabel: React.CSSProperties = {
+  fontFamily: 'var(--font-body)',
+  fontSize: 'var(--fs-body-sm)',
+  color: 'var(--paper-200)',
+};
+
+const section: React.CSSProperties = {
+  padding: 'var(--space-16) 0',
+};
+
+const sectionHeader: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'flex-end',
+  marginBottom: 'var(--space-8)',
+  flexWrap: 'wrap',
+  gap: 'var(--space-4)',
+};
+
+const eyebrow: React.CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 'var(--fs-body-sm)',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  letterSpacing: '0.1em',
+  color: 'var(--signal-500)',
+  marginBottom: 'var(--space-2)',
+};
+
+const sectionH2: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-h2)',
+  fontWeight: 700,
+};
+
+const link: React.CSSProperties = {
+  fontFamily: 'var(--font-body)',
+  fontSize: 'var(--fs-body)',
+  fontWeight: 600,
+  color: 'var(--signal-500)',
+  textDecoration: 'none',
+};
+
+const sectionIntro: React.CSSProperties = {
+  fontFamily: 'var(--font-body)',
+  fontSize: 'var(--fs-body-lg)',
+  lineHeight: 'var(--lh-body)',
+  marginBottom: 'var(--space-8)',
+  maxWidth: 700,
+};
+
+const stepsGrid: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  gap: 'var(--space-6)',
+};
+
+const stepCard: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 'var(--space-3)',
+};
+
+const stepNum: React.CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 'var(--fs-display-2xl)',
+  fontWeight: 900,
+  color: 'var(--signal-500)',
+  lineHeight: 1,
+};
+
+const stepTitle: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-h3)',
+  fontWeight: 700,
+  marginTop: 'var(--space-4)',
+};
+
+const stepBody: React.CSSProperties = {
+  fontFamily: 'var(--font-body)',
+  fontSize: 'var(--fs-body)',
+  lineHeight: 'var(--lh-body)',
+  color: 'var(--text-body)',
+};
+
+const faqH2: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-h2)',
+  fontWeight: 700,
+  marginBottom: 'var(--space-8)',
+};
+
+const faqGrid: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+  gap: 'var(--space-8)',
+};
+
+const faqItem: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 'var(--space-3)',
+};
+
+const faqQ: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-h4)',
+  fontWeight: 700,
+};
+
+const faqA: React.CSSProperties = {
+  fontFamily: 'var(--font-body)',
+  fontSize: 'var(--fs-body)',
+  lineHeight: 'var(--lh-body)',
+  color: 'var(--text-body)',
+};
+
+const aiTeaserGrid: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+  gap: 'var(--space-12)',
+  alignItems: 'center',
+};
+
+const aiCard: React.CSSProperties = {
+  background: 'var(--ink-900)',
+  color: '#fff',
+  padding: 'var(--space-6)',
+  borderRadius: 'var(--radius-lg)',
+};
+
+const aiCardTitle: React.CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 'var(--fs-body-sm)',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  letterSpacing: '0.1em',
+  marginBottom: 'var(--space-4)',
+  color: 'var(--paper-200)',
+};
+
+const aiCardList: React.CSSProperties = {
+  listStyle: 'none',
+  padding: 0,
+  margin: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 'var(--space-2)',
+  marginBottom: 'var(--space-6)',
+};
+
+const aiCardResult: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 'var(--space-2)',
+};
+
+const aiCardResultLabel: React.CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 'var(--fs-body-sm)',
+  color: 'var(--paper-200)',
+};
+
+const aiCardResultNumber: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-h2)',
+  fontWeight: 700,
+  color: 'var(--signal-500)',
+};
+
+const comparisonGrid: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+  gap: 'var(--space-6)',
+};
+
+const comparisonCard: React.CSSProperties = {
+  background: 'rgba(255,255,255,0.05)',
+  padding: 'var(--space-8)',
+  borderRadius: 'var(--radius-lg)',
+};
+
+const comparisonTitle: React.CSSProperties = {
+  fontFamily: 'var(--font-display)',
+  fontSize: 'var(--fs-h3)',
+  fontWeight: 700,
+  marginBottom: 'var(--space-4)',
+  color: 'var(--paper-200)',
+};
+
+const comparisonList: React.CSSProperties = {
+  listStyle: 'none',
+  padding: 0,
+  margin: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 'var(--space-4)',
+};
+
+const comparisonX: React.CSSProperties = {
+  color: 'var(--signal-400)',
+  marginRight: 'var(--space-3)',
+};
+
+const comparisonCheck: React.CSSProperties = {
+  color: 'var(--success)',
+  marginRight: 'var(--space-3)',
+};
+
+const testimonial: React.CSSProperties = {
+  borderLeft: '4px solid var(--signal-500)',
+  paddingLeft: 'var(--space-8)',
+  margin: 0,
+};
+
+const testimonialFooter: React.CSSProperties = {
+  fontFamily: 'var(--font-body)',
+  fontSize: 'var(--fs-body)',
+  color: 'var(--text-body)',
+};

@@ -2,85 +2,64 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button } from '../ui/Button';
-
-const navLinks = [
-  { href: '/check-coverage', label: 'Check coverage' },
-  { href: '/how', label: 'How it works' },
-  { href: '/lists', label: 'Targeted lists' },
-  { href: '/ai-targeting', label: 'AI targeting' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/about', label: 'About' },
-];
 
 export function Nav() {
   const pathname = usePathname();
 
+  const links = [
+    { href: '/check-coverage', label: 'Check Coverage', seo: 'Find USPS carrier routes near you' },
+    { href: '/lists', label: 'Targeted Lists', seo: 'Filter by home value, age, demographics' },
+    { href: '/ai-targeting', label: 'AI Targeting', seo: 'Event-based targeting for local services' },
+    { href: '/pricing', label: 'Pricing', seo: '$0.06/home all-in EDDM pricing' },
+    { href: '/about', label: 'About', seo: 'Why choose Mailhouse Media' },
+  ];
+
   return (
-    <div
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 40,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '14px clamp(20px, 5vw, 56px)',
-        background: 'rgba(245, 234, 228, 0.92)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid var(--border-hairline)',
-      }}
-    >
-      <Link href="/" style={{ display: 'inline-flex' }}>
-        <div
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 900,
-            fontSize: 22,
-            letterSpacing: 'var(--ls-tight)',
-            color: 'var(--ink-900)',
-          }}
-        >
-          MAILHOUSE<span style={{ color: 'var(--signal-500)' }}>.</span>
-        </div>
-      </Link>
-
-      <nav style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-        {navLinks.map((l) => (
-          <Link
-            key={l.href}
-            href={l.href}
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontWeight: 600,
-              fontSize: 15,
-              color: pathname === l.href ? 'var(--signal-600)' : 'var(--text-body)',
-              textDecoration: 'none',
-              transition: 'color 0.15s',
-            }}
-          >
-            {l.label}
+    <header style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+      background: 'var(--surface-canvas)',
+      borderBottom: '1px solid var(--border-soft)',
+      boxShadow: 'var(--shadow-sm)',
+    }}>
+      <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+        <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
+          <Link href="/" style={{ textDecoration: 'none' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 900, fontSize: 20, letterSpacing: '0.05em', color: 'var(--text-strong)' }}>
+                MAILHOUSE
+              </div>
+              <div style={{ width: 2, height: 16, background: 'var(--signal-500)' }} />
+              <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: 14, color: 'var(--text-muted)' }}>
+                EDDM Direct Mail
+              </div>
+            </div>
           </Link>
-        ))}
-      </nav>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-        <Link
-          href="#"
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontWeight: 600,
-            fontSize: 15,
-            color: 'var(--text-strong)',
-            textDecoration: 'none',
-          }}
-        >
-          Sign in
-        </Link>
-        <Link href="/check-coverage">
-          <Button variant="primary" size="sm">Check coverage</Button>
-        </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+            {links.map((link) => (
+              <Link key={link.href} href={link.href} style={{ textDecoration: 'none' }}>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 700,
+                    fontSize: 13,
+                    letterSpacing: '0.05em',
+                    textTransform: 'uppercase',
+                    color: pathname === link.href ? 'var(--signal-600)' : 'var(--text-body)',
+                    padding: '8px 0',
+                    borderBottom: pathname === link.href ? '2px solid var(--signal-500)' : '2px solid transparent',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {link.label}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </nav>
       </div>
-    </div>
+    </header>
   );
 }

@@ -1,0 +1,161 @@
+{
+  "name": "Mailhouse Media - Route Space Order Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "route-space-order",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-order",
+      "name": "Webhook: Route Space Order",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate and process incoming route space order\nconst body = $input.first().json.body;\n\n// Required fields\nconst required = ['business_name', 'contact_name', 'contact_email', 'route_id', 'slot_number'];\nconst missing = required.filter(f => !body[f]);\n\nif (missing.length > 0) {\n  return [{\n    json: {\n      success: false,\n      error: `Missing required fields: ${missing.join(', ')}`,\n      status: 400\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    success: true,\n    business_name: body.business_name,\n    contact_name: body.contact_name,\n    contact_email: body.contact_email,\n    contact_phone: body.phone || '',\n    route_id: body.route_id,\n    slot_number: parseInt(body.slot_number),\n    ad_description: body.ad_description || '',\n    price: parseFloat(body.price) || 550.00\n  }\n}];"
+      },
+      "id": "validate-order",
+      "name": "Validate Order",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "find",
+        "table": "ad_spaces",
+        "filterType": "combine",
+        "filterConditions": {
+          "conditions": [
+            { "column": "route_id", "value": "={{ $json.route_id }}" },
+            { "column": "slot_number", "value": "={{ $json.slot_number }}" },
+            { "column": "status", "value": "available" }
+          ]
+        },
+        "returnFirst": true
+      },
+      "id": "find-space",
+      "name": "Find Specific Space",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const space = $input.first().json;\nconst order = $('Validate Order').first().json;\n\nif (!space || !space.id) {\n  return [{\n    json: {\n      success: false,\n      error: 'This space is no longer available. Please select a different space.',\n      status: 409\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...order,\n    space_id: space.id,\n    space_type: space.space_type,\n    route_id: order.route_id,\n    reserved_until: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()\n  }\n}];"
+      },
+      "id": "check-availability",
+      "name": "Check Availability",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "ad_spaces",
+        "id": "={{ $json.space_id }}",
+        "fields": {
+          "status": "reserved",
+          "business_name": "={{ $json.business_name }}",
+          "contact_name": "={{ $json.contact_name }}",
+          "contact_email": "={{ $json.contact_email }}",
+          "contact_phone": "={{ $json.contact_phone }}",
+          "price": "={{ $json.price }}",
+          "ad_description": "={{ $json.ad_description }}",
+          "reserved_until": "={{ $json.reserved_until }}"
+        }
+      },
+      "id": "reserve-space",
+      "name": "Reserve Space",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1120, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT r.route_number, r.zip_code, c.name as city, c.state_code FROM routes r JOIN cities c ON r.city_id = c.id WHERE r.id = '{{ $json.route_id }}'",
+        "options": {}
+      },
+      "id": "get-route-info",
+      "name": "Get Route Info",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Create Stripe checkout session URL\nconst space = $('Check Availability').first().json;\nconst routeInfo = $input.first().json[0];\n\n// For now, return a placeholder — replace with actual Stripe integration\nconst stripeLink = `https://buy.stripe.com/YOUR_STRIPE_LINK?client_reference_id=${space.space_id}`;\n\nreturn [{\n  json: {\n    success: true,\n    space_id: space.space_id,\n    slot_number: space.slot_number,\n    space_type: space.space_type,\n    route_number: routeInfo.route_number,\n    zip_code: routeInfo.zip_code,\n    city: routeInfo.city,\n    state: routeInfo.state_code,\n    business_name: space.business_name,\n    price: space.price,\n    reserved_until: space.reserved_until,\n    payment_url: stripeLink,\n    message: `Space #${space.slot_number} (${space.space_type}) reserved for ${space.business_name} in Route ${routeInfo.route_number} (${routeInfo.zip_code}). Payment due within 48 hours.`\n  }\n}];"
+      },
+      "id": "create-payment",
+      "name": "Create Payment Link",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": { "responseCode": "={{ $json.success ? 200 : 400 }}" }
+      },
+      "id": "respond",
+      "name": "Respond to Client",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1780, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: Route Space Order": { "main": [[{ "node": "Validate Order", "type": "main", "index": 0 }]] },
+    "Validate Order": { "main": [[{ "node": "Find Specific Space", "type": "main", "index": 0 }]] },
+    "Find Specific Space": { "main": [[{ "node": "Check Availability", "type": "main", "index": 0 }]] },
+    "Check Availability": { "main": [[{ "node": "Reserve Space", "type": "main", "index": 0 }]] },
+    "Reserve Space": { "main": [[{ "node": "Get Route Info", "type": "main", "index": 0 }]] },
+    "Get Route Info": { "main": [[{ "node": "Create Payment Link", "type": "main", "index": 0 }]] },
+    "Create Payment Link": { "main": [[{ "node": "Respond to Client", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "Handles route-specific ad space orders from the landing page. Validates input, reserves specific space in specific route, generates payment link.",
+    "webhook_url": "POST /webhook/route-space-order",
+    "request_body": {
+      "business_name": "required",
+      "contact_name": "required",
+      "contact_email": "required",
+      "route_id": "required (UUID)",
+      "slot_number": "required (1-20)",
+      "phone": "optional",
+      "ad_description": "optional",
+      "price": "optional (defaults to space type price)"
+    },
+    "response": {
+      "success": true,
+      "space_id": "uuid",
+      "slot_number": 5,
+      "space_type": "standard",
+      "route_number": 1,
+      "zip_code": "28301",
+      "city": "Fayetteville",
+      "state": "NC",
+      "business_name": "Example Biz",
+      "price": 550.00,
+      "reserved_until": "2026-06-30T12:00:00Z",
+      "payment_url": "https://buy.stripe.com/..."
+    }
+  }
+}

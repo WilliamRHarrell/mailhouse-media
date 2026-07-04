@@ -1,0 +1,106 @@
+{
+  "name": "Mailhouse Media - Lead Scraper (Google Maps)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-scraper",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook: Start Scrape",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input: city, state, categories (comma-separated), radius\nconst city = $input.first().json.body.city || 'Fayetteville';\nconst state = $input.first().json.body.state || 'NC';\nconst categories = ($input.first().json.body.categories || 'tattoo shop,barbershop,hair salon,gym,restaurant,bar').split(',').map(s => s.trim());\nconst radius = $input.first().json.body.radius || 10;\n\n// Generate search queries for each category\nconst queries = categories.map(cat => `${cat} in ${city}, ${state}`);\n\nreturn queries.map(q => ({ json: { query: q, city, state, categories, radius } }));"
+      },
+      "id": "generate-queries",
+      "name": "Generate Search Queries",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://maps.googleapis.com/maps/api/place/textsearch/json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "query", "value": "={{ $json.query }}" },
+            { "name": "key", "value": "={{ $env.GOOGLE_MAPS_API_KEY }}" },
+            { "name": "region", "value": "us" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "google-maps-api",
+      "name": "Google Places API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Google Places results into prospect records\nconst results = $input.all();\nconst prospects = [];\n\nfor (const item of results) {\n  const places = item.json.results || [];\n  \n  for (const place of places) {\n    if (!place.name) continue;\n    \n    prospects.push({\n      json: {\n        business_name: place.name,\n        address: place.formatted_address || '',\n        phone: place.formatted_phone_number || '',\n        website: place.website || '',\n        google_rating: place.rating || null,\n        review_count: place.user_ratings_total || 0,\n        category: place.types ? place.types[0] : 'other',\n        google_place_id: place.place_id,\n        lat: place.geometry?.location?.lat,\n        lng: place.geometry?.location?.lng,\n        source: 'google_maps'\n      }\n    });\n  }\n}\n\n// Deduplicate by business_name + address\nconst seen = new Set();\nconst unique = prospects.filter(p => {\n  const key = `${p.json.business_name}|${p.json.address}`;\n  if (seen.has(key)) return false;\n  seen.add(key);\n  return true;\n});\n\nconsole.log(`Found ${unique.length} unique prospects`);\nreturn unique;"
+      },
+      "id": "parse-results",
+      "name": "Parse & Deduplicate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": "prospects",
+        "columns": "business_name,address,phone,website,google_rating,review_count,category,source",
+        "options": {
+          "onConflict": "business_name,address"
+        }
+      },
+      "id": "supabase-upsert",
+      "name": "Save to Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1120, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const count = $input.all().length;\nreturn [{ json: { success: true, prospects_added: count, message: `Scraped and saved ${count} prospects to Supabase` } }];"
+      },
+      "id": "respond-success",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: Start Scrape": { "main": [[{ "node": "Generate Search Queries", "type": "main", "index": 0 }]] },
+    "Generate Search Queries": { "main": [[{ "node": "Google Places API", "type": "main", "index": 0 }]] },
+    "Google Places API": { "main": [[{ "node": "Parse & Deduplicate", "type": "main", "index": 0 }]] },
+    "Parse & Deduplicate": { "main": [[{ "node": "Save to Supabase", "type": "main", "index": 0 }]] },
+    "Save to Supabase": { "main": [[{ "node": "Respond Success", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "Scrapes Google Maps for local businesses in target city and saves to Supabase as prospects. Trigger via webhook with city/state/categories.",
+    "usage": "POST to webhook with body: { city: 'Fayetteville', state: 'NC', categories: 'tattoo shop,barbershop,gym,restaurant,bar' }",
+    "requirements": [
+      "Google Maps API key (set as env var GOOGLE_MAPS_API_KEY in n8n)",
+      "Supabase credentials configured in n8n",
+      "Supabase schema deployed (run schema.sql first)"
+    ]
+  }
+}

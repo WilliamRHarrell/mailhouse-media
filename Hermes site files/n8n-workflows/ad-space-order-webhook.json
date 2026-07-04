@@ -1,0 +1,142 @@
+{
+  "name": "Mailhouse Media - Ad Space Order Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ad-space-order",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-order",
+      "name": "Webhook: Ad Order",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate and process incoming ad space order\nconst body = $input.first().json.body;\n\n// Required fields\nconst required = ['business_name', 'contact_name', 'contact_email', 'mailer_id'];\nconst missing = required.filter(f => !body[f]);\n\nif (missing.length > 0) {\n  return [{\n    json: {\n      success: false,\n      error: `Missing required fields: ${missing.join(', ')}`,\n      status: 400\n    }\n  }];\n}\n\n// Find next available slot for this mailer\nreturn [{\n  json: {\n    success: true,\n    business_name: body.business_name,\n    contact_name: body.contact_name,\n    contact_email: body.contact_email,\n    contact_phone: body.phone || '',\n    mailer_id: body.mailer_id,\n    placement: body.placement || 'standard',\n    ad_headline: body.ad_headline || '',\n    ad_description: body.ad_description || '',\n    price: body.price || 550.00\n  }\n}];"
+      },
+      "id": "validate-order",
+      "name": "Validate Order",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "find",
+        "table": "ad_spaces",
+        "filterType": "combine",
+        "filterConditions": {
+          "conditions": [
+            { "column": "mailer_id", "value": "={{ $json.mailer_id }}" },
+            { "column": "status", "value": "available" }
+          ]
+        },
+        "sortBy": "slot_number",
+        "returnFirst": true
+      },
+      "id": "find-available-slot",
+      "name": "Find Available Slot",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const slot = $input.first().json;\nconst order = $('Validate Order').first().json;\n\nif (!slot || !slot.id) {\n  return [{\n    json: {\n      success: false,\n      error: 'No available slots for this mailer. All spaces are filled!',\n      status: 409\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...order,\n    slot_id: slot.id,\n    slot_number: slot.slot_number,\n    reserved_until: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()\n  }\n}];"
+      },
+      "id": "check-availability",
+      "name": "Check Availability",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "ad_spaces",
+        "id": "={{ $json.slot_id }}",
+        "fields": {
+          "status": "reserved",
+          "business_name": "={{ $json.business_name }}",
+          "contact_name": "={{ $json.contact_name }}",
+          "contact_email": "={{ $json.contact_email }}",
+          "contact_phone": "={{ $json.contact_phone }}",
+          "price": "={{ $json.price }}",
+          "placement": "={{ $json.placement }}",
+          "ad_headline": "={{ $json.ad_headline }}",
+          "ad_description": "={{ $json.ad_description }}",
+          "reserved_until": "={{ $json.reserved_until }}"
+        }
+      },
+      "id": "reserve-slot",
+      "name": "Reserve Slot",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1120, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Create Stripe checkout session URL\n// In production, use Stripe API to create a checkout session\nconst slot = $input.first().json;\n\n// For now, return a placeholder — replace with actual Stripe integration\nconst stripeLink = `https://buy.stripe.com/YOUR_STRIPE_LINK?client_reference_id=${slot.slot_id}`;\n\nreturn [{\n  json: {\n    success: true,\n    slot_number: slot.slot_number,\n    business_name: slot.business_name,\n    price: slot.price,\n    reserved_until: slot.reserved_until,\n    payment_url: stripeLink,\n    message: `Slot ${slot.slot_number} reserved for ${slot.business_name}. Payment due within 48 hours.`\n  }\n}];"
+      },
+      "id": "create-payment",
+      "name": "Create Stripe Payment Link",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": { "responseCode": "={{ $json.success ? 200 : 400 }}" }
+      },
+      "id": "respond",
+      "name": "Respond to Client",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: Ad Order": { "main": [[{ "node": "Validate Order", "type": "main", "index": 0 }]] },
+    "Validate Order": { "main": [[{ "node": "Find Available Slot", "type": "main", "index": 0 }]] },
+    "Find Available Slot": { "main": [[{ "node": "Check Availability", "type": "main", "index": 0 }]] },
+    "Check Availability": { "main": [[{ "node": "Reserve Slot", "type": "main", "index": 0 }]] },
+    "Reserve Slot": { "main": [[{ "node": "Create Stripe Payment Link", "type": "main", "index": 0 }]] },
+    "Create Stripe Payment Link": { "main": [[{ "node": "Respond to Client", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "Handles ad space orders from the landing page. Validates input, finds available slot, reserves it for 48hrs, generates Stripe payment link.",
+    "webhook_url": "POST /webhook/ad-space-order",
+    "request_body": {
+      "business_name": "required",
+      "contact_name": "required",
+      "contact_email": "required",
+      "mailer_id": "required (UUID)",
+      "phone": "optional",
+      "placement": "optional (standard|premium|featured)",
+      "ad_headline": "optional",
+      "ad_description": "optional",
+      "price": "optional (defaults to 550)"
+    },
+    "response": {
+      "success": true,
+      "slot_number": 5,
+      "business_name": "Example Biz",
+      "price": 550.00,
+      "reserved_until": "2026-06-30T12:00:00Z",
+      "payment_url": "https://buy.stripe.com/..."
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "name": "Mailhouse Media - Email Outreach Sequence",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "hours", "hoursInterval": 24 }] }
+      },
+      "id": "schedule-trigger",
+      "name": "Daily Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "find",
+        "table": "prospects",
+        "filterType": "combine",
+        "filterConditions": {
+          "conditions": [
+            { "column": "status", "value": "new" },
+            { "column": "outreach_count", "value": 0 }
+          ]
+        },
+        "returnAll": true,
+        "options": { "limit": 50 }
+      },
+      "id": "fetch-new-prospects",
+      "name": "Get New Prospects",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate personalized email for each prospect\nconst prospects = $input.all();\n\nconst emails = prospects.map(item => {\n  const p = item.json;\n  const firstName = p.contact_name ? p.contact_name.split(' ')[0] : 'Business Owner';\n  const bizName = p.business_name;\n  const city = p.city || 'Fayetteville';\n  \n  const subject = `Quick question about ${bizName}`;\n  \n  const body = `Hey ${firstName},\n\nI'm putting together a community mailer for ${city} — a large 9x12 postcard that goes to every single doorstep in the area via USPS.\n\nWe're offering local businesses a chance to get their ad in front of thousands of households for a fraction of what normal advertising costs.\n\nThe mailer hits ${city} homes directly — no digital scrolling, no ad blockers, just real people seeing your business in their hands.\n\nWe have a few ad spaces left and I wanted to give ${bizName} first shot at one before we fill up.\n\nInterested in hearing more? Just reply to this email and I'll send over the details.\n\n— Ryan Harrell\nMailhouse Media\n(910) XXX-XXXX`;\n\n  return {\n    json: {\n      prospect_id: p.id,\n      to_email: p.email,\n      to_name: p.contact_name || bizName,\n      business_name: bizName,\n      subject: subject,\n      body: body,\n      sequence_step: 1\n    }\n  };\n});\n\nreturn emails;"
+      },
+      "id": "generate-email",
+      "name": "Generate Email (Step 1)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "hello@mailhousemedia.com",
+        "toEmail": "={{ $json.to_email }}",
+        "subject": "={{ $json.subject }}",
+        "text": "={{ $json.body }}",
+        "options": {
+          "replyTo": "hello@mailhousemedia.com"
+        }
+      },
+      "id": "send-email",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [900, 300],
+      "credentials": {
+        "smtp": { "id": "REPLACE_WITH_YOUR_SMTP_CREDENTIAL_ID", "name": "SMTP" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "prospects",
+        "id": "={{ $item(-2).json.prospect_id }}",
+        "fields": {
+          "status": "contacted",
+          "outreach_count": 1,
+          "last_outreach_at": "={{ new Date().toISOString() }}"
+        }
+      },
+      "id": "update-prospect",
+      "name": "Update Prospect Status",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1120, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "outreach_log",
+        "fields": {
+          "prospect_id": "={{ $item(-3).json.prospect_id }}",
+          "channel": "email",
+          "sequence_step": "={{ $json.sequence_step }}",
+          "subject": "={{ $json.subject }}",
+          "body": "={{ $json.body }}",
+          "status": "sent"
+        }
+      },
+      "id": "log-outreach",
+      "name": "Log Outreach",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    }
+  ],
+  "connections": {
+    "Daily Schedule": { "main": [[{ "node": "Get New Prospects", "type": "main", "index": 0 }]] },
+    "Get New Prospects": { "main": [[{ "node": "Generate Email (Step 1)", "type": "main", "index": 0 }]] },
+    "Generate Email (Step 1)": { "main": [[{ "node": "Send Email", "type": "main", "index": 0 }]] },
+    "Send Email": { "main": [[{ "node": "Update Prospect Status", "type": "main", "index": 0 }]] },
+    "Update Prospect Status": { "main": [[{ "node": "Log Outreach", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "Automated 3-step email outreach sequence. Runs daily, sends Step 1 to new prospects. Separate workflows handle Step 2 (3 days later) and Step 3 (5 days after Step 2).",
+    "sequence": [
+      "Step 1 (Day 0): Intro email — 'Quick question about [business]'",
+      "Step 2 (Day 3): Social proof — 'Here's who else is advertising'",
+      "Step 3 (Day 8): Urgency — 'Only X spaces left'"
+    ],
+    "requirements": [
+      "SMTP credentials configured in n8n (or use Resend/SendGrid)",
+      "Supabase credentials configured",
+      "Supabase schema deployed"
+    ]
+  }
+}

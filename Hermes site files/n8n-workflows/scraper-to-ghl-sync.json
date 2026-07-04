@@ -1,0 +1,95 @@
+{
+  "name": "Mailhouse Media - Scraper → GHL Contact Sync",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "scraper-to-ghl",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook: Scraper Complete",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Receive scraped prospects and prepare for GHL import\nconst body = $input.first().json.body;\nconst prospects = body.prospects || [];\nconst city = body.city || 'Fayetteville';\nconst state = body.state || 'NC';\nconst routeNumber = body.route_number;\nconst zipCode = body.zip_code;\n\n// Map to GHL contact format\nconst contacts = prospects.map(p => ({\n  json: {\n    // GHL contact fields\n    firstName: p.contact_name ? p.contact_name.split(' ')[0] : '',\n    lastName: p.contact_name ? p.contact_name.split(' ').slice(1).join(' ') : '',\n    businessName: p.business_name,\n    email: p.email || '',\n    phone: p.phone || '',\n    address1: p.address || '',\n    city: p.city || city,\n    state: p.state || state,\n    postalCode: p.zip || zipCode,\n    website: p.website || '',\n    \n    // Custom fields (create these in GHL)\n    source: 'google_maps',\n    category: p.category || '',\n    googleRating: p.google_rating || '',\n    reviewCount: p.review_count || 0,\n    routeNumber: routeNumber || '',\n    zipCode: zipCode || '',\n    \n    // Tags for GHL\n    tags: [\n      `city-${city.toLowerCase().replace(/\\s/g, '-')}`,\n      `route-${routeNumber}`,\n      `zip-${zipCode}`,\n      `category-${(p.category || 'other').toLowerCase()}`,\n      'source-google-maps',\n      'status-new'\n    ]\n  }\n}));\n\nreturn contacts;"
+      },
+      "id": "format-for-ghl",
+      "name": "Format for GHL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/upsert",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "goHighLevelApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Version", "value": "2021-07-28" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ email: $json.email, phone: $json.phone, firstName: $json.firstName, lastName: $json.lastName, businessName: $json.businessName, address1: $json.address1, city: $json.city, state: $json.state, postalCode: $json.postalCode, website: $json.website, tags: $json.tags, source: $json.source }) }}",
+        "options": {}
+      },
+      "id": "ghl-upsert",
+      "name": "Upsert Contact to GHL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300],
+      "credentials": {
+        "goHighLevelApi": { "id": "REPLACE_WITH_YOUR_GHL_CREDENTIAL_ID", "name": "GoHighLevel API" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const total = $input.all().length;\nconst success = $input.all().filter(item => item.json.data?.contact?.id).length;\n\nreturn [{\n  json: {\n    success: true,\n    total_received: total,\n    contacts_created: success,\n    message: `Synced ${success}/${total} contacts to GoHighLevel`\n  }\n}];"
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: Scraper Complete": { "main": [[{ "node": "Format for GHL", "type": "main", "index": 0 }]] },
+    "Format for GHL": { "main": [[{ "node": "Upsert Contact to GHL", "type": "main", "index": 0 }]] },
+    "Upsert Contact to GHL": { "main": [[{ "node": "Respond", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "Receives scraped prospects and syncs them to GoHighLevel as contacts with tags for city, route, zip, and category. GHL then handles all outreach automation.",
+    "ghl_setup": {
+      "custom_fields_needed": [
+        "businessName (text)",
+        "category (text)",
+        "googleRating (text)",
+        "reviewCount (number)",
+        "routeNumber (text)",
+        "zipCode (text)",
+        "adSpaceRoute (text)",
+        "adSpaceSlot (number)",
+        "adSpaceStatus (text)"
+      ],
+      "tags_needed": [
+        "city-fayetteville",
+        "route-1",
+        "zip-28301",
+        "status-new",
+        "status-contacted",
+        "status-interested",
+        "status-paid"
+      ]
+    }
+  }
+}

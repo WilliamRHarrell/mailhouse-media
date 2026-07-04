@@ -1,0 +1,51 @@
+/* Mailhouse Media — Spacing, radius, shadow, motion tokens */
+:root {
+  /* ---- Spacing (4px base) ---- */
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* ---- Radius — restrained; brand reads tangible/printed, not bubbly ---- */
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+  --radius-card: var(--radius-lg);
+
+  /* ---- Borders ---- */
+  --bw-hair: 1px;
+  --bw-bold: 2px;
+
+  /* ---- Elevation — soft, cool-ink shadows (no purple) ---- */
+  --shadow-xs: 0 1px 2px rgba(3, 11, 24, 0.08);
+  --shadow-sm: 0 2px 6px rgba(3, 11, 24, 0.08);
+  --shadow-md: 0 6px 18px rgba(3, 11, 24, 0.10);
+  --shadow-lg: 0 18px 44px rgba(3, 11, 24, 0.16);
+  --shadow-signal: 0 8px 22px rgba(254, 0, 50, 0.28);
+  /* Printed-card lift used for postcard/route previews */
+  --shadow-card: 0 1px 0 rgba(3,11,24,0.04), 0 10px 30px rgba(3,11,24,0.12);
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* @kind other */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* @kind other */
+  --dur-fast: 120ms; /* @kind other */
+  --dur-base: 200ms; /* @kind other */
+  --dur-slow: 360ms; /* @kind other */
+
+  /* ---- Layout ---- */
+  --container-max: 1200px;
+  --container-narrow: 760px;
+}

@@ -1,0 +1,88 @@
+/* Mailhouse Media — Color tokens
+   Source palette (brand brief): ink 030b18 · paper f5eae4 · signal fe0032 · navy 313e60 */
+:root {
+  /* ---- Brand core (raw) ---- */
+  --ink:        #030b18; /* near-black navy — primary text, dark surfaces */
+  --paper:      #f5eae4; /* warm cream — primary canvas */
+  --signal:     #fe0032; /* vivid red — action, CTA, scarcity */
+  --navy:       #313e60; /* slate navy — secondary, trust */
+
+  /* ---- Ink scale (cool near-black to mid) ---- */
+  --ink-900: #030b18;
+  --ink-800: #0a1424;
+  --ink-700: #131e31;
+  --ink-600: #1d2a40;
+  --ink-500: #313e60; /* == navy */
+  --ink-400: #55618a;
+  --ink-300: #8189ab;
+  --ink-200: #b4bacd;
+  --ink-100: #d9dce6;
+
+  /* ---- Paper scale (warm cream to white) ---- */
+  --paper-50:  #fffdfb;
+  --paper-100: #fbf5f0;
+  --paper-200: #f5eae4; /* == paper */
+  --paper-300: #ecddd4;
+  --paper-400: #ddcabf;
+  --paper-500: #c8b3a6;
+
+  /* ---- Signal scale (red) ---- */
+  --signal-700: #c40027;
+  --signal-600: #e1002d;
+  --signal-500: #fe0032; /* == signal */
+  --signal-400: #ff3358;
+  --signal-300: #ff8197;
+  --signal-100: #ffe1e7;
+
+  /* ---- Navy scale ---- */
+  --navy-700: #232d47;
+  --navy-600: #2a3553;
+  --navy-500: #313e60;
+  --navy-400: #475583;
+  --navy-100: #e3e6ef;
+
+  /* ---- Supporting semantic hues (derived, harmonious) ---- */
+  --success:  #1f8a4c;
+  --success-bg: #e3f3e9;
+  --warning:  #c9760a;
+  --warning-bg: #fbeede;
+  --info:     #313e60;
+  --info-bg:  #e3e6ef;
+
+  /* ================= SEMANTIC ALIASES ================= */
+  /* Surfaces */
+  --surface-canvas:    var(--paper-200);
+  --surface-raised:    var(--paper-50);
+  --surface-card:      #ffffff;
+  --surface-sunken:    var(--paper-300);
+  --surface-ink:       var(--ink-900);
+  --surface-ink-soft:  var(--ink-700);
+  --surface-navy:      var(--navy-500);
+
+  /* Text */
+  --text-strong:   var(--ink-900);
+  --text-body:     var(--ink-700);
+  --text-muted:    var(--ink-400);
+  --text-faint:    var(--ink-300);
+  --text-on-ink:   var(--paper-100);
+  --text-on-ink-muted: var(--ink-200);
+  --text-on-signal: #ffffff;
+  --text-accent:   var(--signal-500);
+  --text-link:     var(--signal-600);
+
+  /* Borders / lines */
+  --border-hairline: rgba(3, 11, 24, 0.10);
+  --border-soft:     rgba(3, 11, 24, 0.16);
+  --border-strong:   var(--ink-900);
+  --border-on-ink:   rgba(245, 234, 228, 0.16);
+
+  /* Action */
+  --action-primary:        var(--signal-500);
+  --action-primary-hover:  var(--signal-600);
+  --action-primary-press:  var(--signal-700);
+  --action-secondary:      var(--ink-900);
+  --action-secondary-hover:var(--ink-700);
+
+  /* Focus */
+  --focus-ring: var(--signal-400);
+}

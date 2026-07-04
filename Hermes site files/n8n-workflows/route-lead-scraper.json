@@ -1,0 +1,141 @@
+{
+  "name": "Mailhouse Media - Route-Based Lead Scraper",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "route-lead-scraper",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook: Scrape Route",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input: city, state, route_number, zip_code, categories\nconst body = $input.first().json.body;\nconst city = body.city || 'Fayetteville';\nconst state = body.state || 'NC';\nconst routeNumber = body.route_number;\nconst zipCode = body.zip_code;\nconst categories = (body.categories || 'tattoo shop,barbershop,hair salon,gym,restaurant,bar,real estate,insurance,lawyer,dentist').split(',').map(s => s.trim());\n\nif (!routeNumber || !zipCode) {\n  throw new Error('route_number and zip_code are required');\n}\n\n// Generate search queries for each category in this zip code\nconst queries = categories.map(cat => `${cat} in ${zipCode}`);\n\nreturn [{\n  json: {\n    city,\n    state,\n    route_number: routeNumber,\n    zip_code: zipCode,\n    queries,\n    categories\n  }\n}];"
+      },
+      "id": "parse-input",
+      "name": "Parse Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Create a query for each category\nconst input = $input.first().json;\nreturn input.queries.map(q => ({\n  json: {\n    query: q,\n    city: input.city,\n    state: input.state,\n    route_number: input.route_number,\n    zip_code: input.zip_code\n  }\n}));"
+      },
+      "id": "split-queries",
+      "name": "Split Queries",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://maps.googleapis.com/maps/api/place/textsearch/json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "query", "value": "={{ $json.query }}" },
+            { "name": "key", "value": "={{ $env.GOOGLE_MAPS_API_KEY }}" },
+            { "name": "region", "value": "us" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "google-maps-api",
+      "name": "Google Places API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Google Places results and filter by zip code\nconst results = $input.all();\nconst prospects = [];\nconst routeInfo = results[0]?.json || {};\n\nfor (const item of results) {\n  const places = item.json.results || [];\n  \n  for (const place of places) {\n    if (!place.name) continue;\n    \n    // Extract zip from address\n    const address = place.formatted_address || '';\n    const zipMatch = address.match(/\\b(\\d{5})\\b/);\n    const zip = zipMatch ? zipMatch[1] : '';\n    \n    // Only include if in target zip code (or close match)\n    if (zip && zip !== routeInfo.zip_code) {\n      continue; // Skip businesses outside target zip\n    }\n    \n    prospects.push({\n      json: {\n        business_name: place.name,\n        address: address,\n        phone: place.formatted_phone_number || '',\n        website: place.website || '',\n        google_rating: place.rating || null,\n        review_count: place.user_ratings_total || 0,\n        category: place.types ? place.types[0] : 'other',\n        google_place_id: place.place_id,\n        lat: place.geometry?.location?.lat,\n        lng: place.geometry?.location?.lng,\n        zip: zip,\n        city: routeInfo.city,\n        state: routeInfo.state,\n        source: 'google_maps',\n        route_number: routeInfo.route_number,\n        zip_code: routeInfo.zip_code\n      }\n    });\n  }\n}\n\n// Deduplicate by business_name + address\nconst seen = new Set();\nconst unique = prospects.filter(p => {\n  const key = `${p.json.business_name}|${p.json.address}`;\n  if (seen.has(key)) return false;\n  seen.add(key);\n  return true;\n});\n\nconsole.log(`Found ${unique.length} unique prospects in zip ${routeInfo.zip_code}`);\nreturn unique;"
+      },
+      "id": "parse-results",
+      "name": "Parse & Filter by Zip",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT id FROM routes WHERE route_number = {{ $json.route_number }} AND zip_code = '{{ $json.zip_code }}' LIMIT 1",
+        "options": {}
+      },
+      "id": "get-route-id",
+      "name": "Get Route ID",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Attach route_id to each prospect\nconst routeId = $input.first().json[0]?.id;\nconst prospects = $('Parse & Filter by Zip').all();\n\nif (!routeId) {\n  throw new Error('Route not found in database');\n}\n\nreturn prospects.map(p => ({\n  json: {\n    ...p.json,\n    route_id: routeId\n  }\n}));"
+      },
+      "id": "attach-route-id",
+      "name": "Attach Route ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": "prospects",
+        "columns": "business_name,address,phone,website,google_rating,review_count,category,source,zip,city,state,route_id,google_place_id,lat,lng",
+        "options": {
+          "onConflict": "business_name,address"
+        }
+      },
+      "id": "supabase-upsert",
+      "name": "Save to Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1780, 300],
+      "credentials": {
+        "supabaseApi": { "id": "REPLACE_WITH_YOUR_SUPABASE_CREDENTIAL_ID", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const count = $input.all().length;\nconst routeInfo = $('Parse Input').first().json;\nreturn [{ json: { success: true, prospects_added: count, route_number: routeInfo.route_number, zip_code: routeInfo.zip_code, message: `Scraped ${count} prospects for Route ${routeInfo.route_number} (${routeInfo.zip_code})` } }];"
+      },
+      "id": "respond-success",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2000, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: Scrape Route": { "main": [[{ "node": "Parse Input", "type": "main", "index": 0 }]] },
+    "Parse Input": { "main": [[{ "node": "Split Queries", "type": "main", "index": 0 }]] },
+    "Split Queries": { "main": [[{ "node": "Google Places API", "type": "main", "index": 0 }]] },
+    "Google Places API": { "main": [[{ "node": "Parse & Filter by Zip", "type": "main", "index": 0 }]] },
+    "Parse & Filter by Zip": { "main": [[{ "node": "Get Route ID", "type": "main", "index": 0 }]] },
+    "Get Route ID": { "main": [[{ "node": "Attach Route ID", "type": "main", "index": 0 }]] },
+    "Attach Route ID": { "main": [[{ "node": "Save to Supabase", "type": "main", "index": 0 }]] },
+    "Save to Supabase": { "main": [[{ "node": "Respond Success", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "description": "Scrapes Google Maps for businesses within a specific postal route (zip code) and assigns them to that route in Supabase.",
+    "usage": "POST to webhook with body: { city: 'Fayetteville', state: 'NC', route_number: 1, zip_code: '28301', categories: 'tattoo shop,barbershop,gym' }",
+    "requirements": [
+      "Google Maps API key (set as env var GOOGLE_MAPS_API_KEY in n8n)",
+      "Supabase credentials configured in n8n",
+      "Routes must exist in database before scraping"
+    ]
+  }
+}
