@@ -41,7 +41,7 @@ export default function HomePage() {
                 marginBottom: 'var(--space-8)',
               }}
             >
-              Skip the digital noise. Our EDDM (Every Door Direct Mail) service puts your 9×12 postcard in every mailbox on the carrier routes you choose. No ad blockers. No scrolling past. Just real mail, real responses, and real jobs. Design, printing, and USPS postage all included — starting at just $0.06 per home.
+              Skip the digital noise. Our EDDM (Every Door Direct Mail) service puts your 9×12 postcard in every mailbox on the carrier routes you choose. No ad blockers. No scrolling past. Just real mail, real responses, and real jobs. Design, printing, and USPS postage all included — starting at just $1.99 per home.
             </p>
             <Link href="/check-coverage" style={ctaBtn}>
               See Available Routes Near You →
@@ -55,7 +55,7 @@ export default function HomePage() {
         <div className="container" style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
           <div style={proofGrid}>
             <div style={proofItem}>
-              <div style={proofNumber}>$0.06/home</div>
+              <div style={proofNumber}>$1.99/home</div>
               <div style={proofLabel}>"Lowest cost-per-impression in local advertising"</div>
             </div>
             <div style={proofItem}>
@@ -134,7 +134,7 @@ export default function HomePage() {
               },
               {
                 q: 'How much does EDDM direct mail cost?',
-                a: "Our EDDM service includes everything — design, printing, and USPS postage — for just $0.06 per home. For a typical route of 800-900 homes, that's $48-$54 total. Compare that to Facebook or Google ads, where you pay per impression with no guarantee anyone actually sees your message.",
+                a: "Our EDDM service includes everything — design, printing, and USPS postage — for just $1.99 per home. For a typical 1,000-home route, that's $1,990 total. Compare that to Facebook or Google ads, where you pay per impression with no guarantee anyone actually sees your message.",
               },
               {
                 q: "What's the average response rate for direct mail?",
@@ -233,7 +233,7 @@ export default function HomePage() {
                 </li>
                 <li>
                   <span style={comparisonCheck}>✓</span>
-                  <span>Flat $0.06 per home, all-in</span>
+                  <span>Flat $1.99 per home, all-in</span>
                 </li>
                 <li>
                   <span style={comparisonCheck}>✓</span>
@@ -259,6 +259,62 @@ export default function HomePage() {
               </div>
             </footer>
           </blockquote>
+        </div>
+      </section>
+
+      {/* PORTFOLIO SHOWCASE */}
+      <section style={{ ...section, background: 'var(--paper-100)' }}>
+        <div className="container" style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+            <div style={eyebrow}>Real Work, Real Results</div>
+            <h2 style={sectionH2}>From Napkin Sketch to Mailbox</h2>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-body-lg)', color: 'var(--text-muted)', maxWidth: 600, margin: 'var(--space-4) auto 0' }}>
+              Give us a rough idea. We'll turn it into a professional 9×12 postcard that gets responses.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-8)', maxWidth: 1000, margin: '0 auto' }}>
+            {/* Before */}
+            <div style={{ textAlign: 'center' }}>
+              <div style={portfolioLabel}>Before: Client's Sketch</div>
+              <div style={portfolioImageWrapper}>
+                <img
+                  src="/portfolio-nicks-sketch.png"
+                  alt="Hand-drawn sketch for Nick's Mobile Oil Change"
+                  style={portfolioImage}
+                />
+              </div>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-body-sm)', color: 'var(--text-muted)', marginTop: 'var(--space-4)' }}>
+                Simple drawing with basic layout notes
+              </p>
+            </div>
+
+            {/* Arrow */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'clamp(2rem, 4vw, 3rem)', color: 'var(--signal-500)', fontWeight: 700 }}>
+              →
+            </div>
+
+            {/* After */}
+            <div style={{ textAlign: 'center' }}>
+              <div style={portfolioLabel}>After: Mailhouse Design</div>
+              <div style={portfolioImageWrapper}>
+                <img
+                  src="/portfolio-nicks-finished.png"
+                  alt="Professional 9x12 postcard design for Nick's Mobile Oil Change"
+                  style={portfolioImage}
+                />
+              </div>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--fs-body-sm)', color: 'var(--text-muted)', marginTop: 'var(--space-4)' }}>
+                Print-ready 9×12 postcard — mailed to 1,000 homes
+              </p>
+            </div>
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 'var(--space-12)' }}>
+            <Link href="/check-coverage" style={ctaBtn}>
+              Start Your Project →
+            </Link>
+          </div>
         </div>
       </section>
     </div>
@@ -539,4 +595,29 @@ const testimonialFooter: React.CSSProperties = {
   fontFamily: 'var(--font-body)',
   fontSize: 'var(--fs-body)',
   color: 'var(--text-body)',
+};
+
+const portfolioLabel: React.CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 'var(--fs-micro)',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  letterSpacing: 'var(--ls-eyebrow)',
+  color: 'var(--signal-500)',
+  marginBottom: 'var(--space-3)',
+};
+
+const portfolioImageWrapper: React.CSSProperties = {
+  background: 'var(--surface-card)',
+  border: '1px solid var(--border-hairline)',
+  borderRadius: 'var(--radius-lg)',
+  padding: 'var(--space-4)',
+  boxShadow: 'var(--shadow-sm)',
+};
+
+const portfolioImage: React.CSSProperties = {
+  width: '100%',
+  height: 'auto',
+  display: 'block',
+  borderRadius: 'var(--radius-md)',
 };

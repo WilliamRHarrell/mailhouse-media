@@ -367,7 +367,7 @@ export default function AITargetingPage() {
               },
               {
                 q: 'Is AI targeting worth the extra cost?',
-                a: "For most clients, yes. The extra $0.05/home (vs EDDM at $0.06) pays for itself with higher response rates. Average response for EDDM is 5-9%. Average response for AI targeting is 8-15% (because you're hitting the right audience at the right time). For a 500-home mailing, that's 40-75 responses vs 25-45 responses — enough to cover the extra $25 cost with just one extra job.",
+                a: "For most clients, yes. The extra $0.10/home (vs $0.65 targeted list) pays for itself with higher response rates from event timing. Average response for standard targeted lists is 5-9%. Average response for AI event targeting is 8-15% (because you're hitting the right audience at the right time). For a 500-home mailing, that's 40-75 responses vs 25-45 responses — enough to cover the extra $50 cost with just one extra job.",
               },
             ].map((faq, i) => (
               <div key={i}>

@@ -8,6 +8,7 @@ export function Nav() {
 
   const links = [
     { href: '/check-coverage', label: 'Check Coverage', seo: 'Find USPS carrier routes near you' },
+    { href: '/calculator', label: 'Pricing Calculator', seo: 'Get instant quote for your route' },
     { href: '/lists', label: 'Targeted Lists', seo: 'Filter by home value, age, demographics' },
     { href: '/ai-targeting', label: 'AI Targeting', seo: 'Event-based targeting for local services' },
     { href: '/pricing', label: 'Pricing', seo: '$0.06/home all-in EDDM pricing' },

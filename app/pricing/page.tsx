@@ -3,11 +3,11 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
-  title: 'Direct Mail Pricing | $0.06/Home All-In for EDDM',
-  description: 'Transparent direct mail pricing starting at $0.06/home. Design, printing, USPS postage all included. No hidden fees, no contracts. See pricing for EDDM, targeted lists, and AI targeting.',
+  title: 'Direct Mail Pricing | 9×12 EDDM Postcards $1.45/Home All-In',
+  description: 'Transparent direct mail pricing starting at $1.45/home for 9×12 postcards. Design, printing, USPS postage all included. No hidden fees, no contracts. See pricing for EDDM, targeted lists, and AI targeting.',
   openGraph: {
-    title: 'Mailhouse Media Pricing — Starting at $0.06/Home',
-    description: 'No hidden fees. No setup costs. No contracts. Everything included at $0.06/home for EDDM.',
+    title: 'Mailhouse Media Pricing — Starting at $1.45/Home',
+    description: 'No hidden fees. No setup costs. No contracts. Everything included at $1.45/home for 9×12 EDDM postcards.',
   },
 };
 
@@ -19,11 +19,12 @@ export default function PricingPage() {
         <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-micro)', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--signal-500)' }}>
           Pricing
         </span>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(38px, 4.6vw, 56px)', lineHeight: 1, letterSpacing: '-0.03em', margin: '14px auto 0', color: 'var(--text-strong)', maxWidth: 720 }}>
-          Direct Mail Pricing: $0.06/Home, Everything Included
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(38px, 4.6vw, 56px)', lineHeight: 1, letterSpacing: '-0.03em', margin: '14px auto 0', color: 'var(--text-strong)', maxWidth: 720 }}
+>
+          Direct Mail Pricing: $1.45/Home for 9×12 Postcards
         </h1>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: 18, lineHeight: 1.55, color: 'var(--text-muted)', margin: '16px auto 0', maxWidth: 560 }}>
-          What's included in $0.06/home? Everything. Design, printing, USPS postage, tracking, and support. No hidden fees, no setup charges, no surprise costs.
+          What's included? Everything. Design, printing, USPS postage, tracking, and support. Our 9×12 premium format gets 3× the response rate of standard postcards. No hidden fees, no setup charges, no surprise costs.
         </p>
       </div>
 
@@ -33,25 +34,25 @@ export default function PricingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
           {[
             {
-              title: 'EDDM Service',
+              title: 'EDDM 9×12 Postcards',
               subtitle: 'Every Door Direct Mail',
-              tag: 'Best for: Broad awareness, budget campaigns',
-              price: '$0.06/home',
-              bullets: ['Design, printing, USPS postage', 'Every home on carrier route', '800-900 homes per route', 'No targeting — full coverage'],
+              tag: 'Best for: Maximum impact, premium local advertising',
+              price: '$1.45/home',
+              bullets: ['Design, printing, USPS postage', '9×12 premium format (3× response)', 'Every home on carrier route', '500-2000 homes per route'],
+              featured: true,
             },
             {
               title: 'Targeted Mail Lists',
               subtitle: 'Demographic filtering',
               tag: 'Best for: High-ticket services, premium customers',
-              price: '$0.11/home',
+              price: '$0.65/home',
               bullets: ['Filter by homeowner, value, age', 'Only matching homes receive mail', '300-600 homes per list', 'Include data access + filtering'],
-              featured: true,
             },
             {
               title: 'AI Event Targeting',
               subtitle: 'Event-based precision',
               tag: 'Best for: Hail storms, seasonal shifts, new closings',
-              price: '$0.11/home',
+              price: '$0.75/home',
               bullets: ['AI detects events automatically', 'Custom list + vertical match', '300-800 homes per list', 'Real-time event monitoring'],
             },
           ].map((s, i) => (
@@ -114,19 +115,19 @@ export default function PricingPage() {
           {[
             {
               name: 'Starter',
-              desc: 'Test a route first',
-              price: '$0.06',
-              example: '$54 for 900 homes (1 route)',
-              features: ['Single route, single mailing', 'Design, print, postage included', 'Basic tracking', 'Email support'],
+              desc: 'Test 9×12 EDDM on a single route',
+              price: '$1.45',
+              example: '$725 for 500 homes (1 route)',
+              features: ['Single route, single mailing', 'Design, print, postage included', 'Campaign tracking + QR code', 'Email support'],
               featured: false,
               btnVariant: 'outline' as const,
             },
             {
               name: 'Growth',
               desc: 'Most popular with local businesses',
-              price: '$0.06',
-              example: '$270 for 4,500 homes (5 routes)',
-              features: ['Up to 5 routes per mailing', 'Priority design (24hr)', 'Dedicated tracking + QR', 'Quarterly re-mail discount'],
+              price: '$1.35',
+              example: '$2,700 for 2,000 homes (volume rate)',
+              features: ['Up to 5 routes per mailing', 'Priority design (24hr)', 'Dedicated tracking + QR', '10% volume discount at 2,000+ homes'],
               featured: true,
               btnVariant: 'primary' as const,
             },
@@ -135,7 +136,7 @@ export default function PricingPage() {
               desc: 'Multi-client, ongoing campaigns',
               price: 'Custom',
               example: 'Volume pricing on request',
-              features: ['Unlimited routes', 'Custom artwork per client', 'API access for inventory', 'Account manager'],
+              features: ['Unlimited routes', 'Custom artwork per client', 'API access for inventory', 'Dedicated account manager'],
               featured: false,
               btnVariant: 'outline' as const,
             },
@@ -204,31 +205,31 @@ export default function PricingPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
             {[
               {
-                biz: 'Roofer (EDDM Pro)',
-                cost: '$216',
-                reach: '3,600 homes',
-                response: '328 leads',
-                jobs: '11 inspections, 4 replacements',
-                revenue: '$50,000',
-                roi: '231×',
+                biz: 'Roofer (9×12 EDDM — 1,000 homes)',
+                cost: '$1,450',
+                reach: '1,000 homes @ 9×12 size',
+                response: '50-90 responses (5-9%)',
+                jobs: '15 inspections, 4 replacements',
+                revenue: '$52,000',
+                roi: '36×',
               },
               {
-                biz: 'Landscaper (Targeted List)',
-                cost: '$55',
-                reach: '500 homes',
-                response: '57 leads',
-                jobs: '18 design jobs',
-                revenue: '$50,400',
-                roi: '916×',
+                biz: 'Landscaper (Targeted List — 500 homes)',
+                cost: '$375',
+                reach: '500 homes, $600K+ value',
+                response: '35 responses (7%)',
+                jobs: '10 design jobs booked',
+                revenue: '$28,000',
+                roi: '75×',
               },
               {
-                biz: 'Dent Repair (AI Targeting)',
-                cost: '$231',
-                reach: '2,100 homes',
-                response: '183 leads',
-                jobs: '47 dent repair jobs',
-                revenue: '$16,450',
-                roi: '71×',
+                biz: 'Dent Repair (AI Targeting — 1,500 homes)',
+                cost: '$1,224',
+                reach: '1,500 homes in hail zone',
+                response: '135 responses (9%)',
+                jobs: '35 dent repair jobs',
+                revenue: '$12,250',
+                roi: '10×',
               },
             ].map((r, i) => (
               <div key={i} style={{ background: 'var(--surface-card)', border: '1px solid var(--border-hairline)', borderRadius: 'var(--radius-lg)', padding: 24, boxShadow: 'var(--shadow-sm)' }}>
@@ -259,7 +260,7 @@ export default function PricingPage() {
             ))}
           </div>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 14.5, color: 'var(--text-muted)', textAlign: 'center', margin: '24px auto 0', maxWidth: 640, lineHeight: 1.55 }}>
-            Even at a conservative 10× ROI, a $54 EDDM mailing becomes $540 in revenue. Direct mail is one of the highest-ROI channels available to local businesses — and the only one that reaches 100% of households.
+            Our customers average 10-36× ROI on their first mailing — and the 9×12 format converts at 3× the rate of standard postcards. Direct mail is the highest-ROI channel available to local service businesses.
           </p>
         </div>
       </section>
@@ -270,16 +271,20 @@ export default function PricingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 28, marginTop: 32 }}>
           {[
             {
-              q: 'Is there a setup fee or minimum order?',
-              a: "No setup fees. No minimum order. You can start with a single 900-home route for $54. We don't believe in locking you into contracts or charging hidden fees.",
+              q: "Is there a setup fee or minimum order?",
+              a: "No setup fees. Minimum order for 9×12 EDDM is 500 homes, which comes to $725 including design, printing, postage, and tracking. For targeted lists, minimum is 100 homes at $325.",
             },
             {
-              q: 'What does $0.06/home actually include?',
-              a: 'Everything. Professional design (with unlimited revisions), 14pt premium card stock printing, USPS EDDM postage, tracking, and support. The only thing you need to provide is your logo, offer, and brand guidelines.',
+              q: 'Why 9×12 instead of standard postcards?',
+              a: "Three reasons: (1) 9×12 gets 3× the response rate because it stands out in the mailbox — it feels important, not like junk mail. (2) USPS EDDM postage is a flat rate regardless of size, so 9×12 costs the same to mail. (3) You get more ad space to tell your story, show before/after photos, and build trust. The premium pricing pays for itself in response.",
             },
             {
-              q: 'Why is targeted list pricing $0.11/home?',
-              a: 'Targeted lists require more work: we pull custom data, apply filters, and verify addresses. EDDM uses a pre-built carrier route. The extra $0.05/home covers data access and list generation. Plus, targeted lists typically get 2× the response rate, so the cost-per-lead is often lower.',
+              q: "Why is 9×12 EDDM $1.45/home?",
+              a: "Our cost to fulfill a 9×12 mailing is ~$0.52/piece (postage $0.247, premium 16pt printing ~$0.18, lettershop bundling ~$0.06, lettershop overhead ~$0.03, design amortization ~$0.02). That means at $1.45/home we maintain roughly 64% margin to cover operations, customer success, design labor, and reinvestment in the business. This also leaves room for volume discounts at 2,000+ homes and for quality fulfillment at any volume.",
+            },
+            {
+              q: 'Why is targeted list pricing $0.65/home?',
+              a: "Targeted lists have smaller print runs so per-piece printing is higher, but we skip the postage on homes that wouldn't have responded anyway. The math usually works out to a lower cost-per-lead than blanket EDDM. Plus you get to reach exactly the demographic you want (high-value homeowners, new movers, etc.)",
             },
             {
               q: 'Do you charge extra for design revisions?',
