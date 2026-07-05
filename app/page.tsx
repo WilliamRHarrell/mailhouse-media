@@ -204,19 +204,19 @@ export default function HomePage() {
               <ul style={comparisonList}>
                 <li>
                   <span style={comparisonX}>✕</span>
-                  <span>0.1% average response rate</span>
+                  <span style={{ color: 'var(--paper-200)' }}>0.1% average response rate</span>
                 </li>
                 <li>
                   <span style={comparisonX}>✕</span>
-                  <span>Blocked, muted, or scrolled past</span>
+                  <span style={{ color: 'var(--paper-200)' }}>Blocked, muted, or scrolled past</span>
                 </li>
                 <li>
                   <span style={comparisonX}>✕</span>
-                  <span>Auction prices that climb every quarter</span>
+                  <span style={{ color: 'var(--paper-200)' }}>Auction prices that climb every quarter</span>
                 </li>
                 <li>
                   <span style={comparisonX}>✕</span>
-                  <span>Competing with global brands</span>
+                  <span style={{ color: 'var(--paper-200)' }}>Competing with global brands</span>
                 </li>
               </ul>
             </div>
