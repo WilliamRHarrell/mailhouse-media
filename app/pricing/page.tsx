@@ -3,11 +3,11 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
-  title: 'Direct Mail Pricing | 9×12 EDDM Postcards $1.45/Home All-In',
-  description: 'Transparent direct mail pricing starting at $1.45/home for 9×12 postcards. Design, printing, USPS postage all included. No hidden fees, no contracts. See pricing for EDDM, targeted lists, and AI targeting.',
+  title: 'Direct Mail Pricing | 9×12 EDDM Postcards $1.99/Home All-In',
+  description: 'Transparent direct mail pricing starting at $1.99/home for 9×12 postcards. Design, printing, USPS postage all included. No hidden fees, no contracts. See pricing for EDDM, targeted lists, and AI targeting.',
   openGraph: {
-    title: 'Mailhouse Media Pricing — Starting at $1.45/Home',
-    description: 'No hidden fees. No setup costs. No contracts. Everything included at $1.45/home for 9×12 EDDM postcards.',
+    title: 'Mailhouse Media Pricing — Starting at $1.99/Home',
+    description: 'No hidden fees. No setup costs. No contracts. Everything included at $1.99/home for 9×12 EDDM postcards.',
   },
 };
 
@@ -21,7 +21,7 @@ export default function PricingPage() {
         </span>
         <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 900, fontSize: 'clamp(38px, 4.6vw, 56px)', lineHeight: 1, letterSpacing: '-0.03em', margin: '14px auto 0', color: 'var(--text-strong)', maxWidth: 720 }}
 >
-          Direct Mail Pricing: $1.45/Home for 9×12 Postcards
+          Direct Mail Pricing: $1.99/Home for 9×12 Postcards
         </h1>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: 18, lineHeight: 1.55, color: 'var(--text-muted)', margin: '16px auto 0', maxWidth: 560 }}>
           What's included? Everything. Design, printing, USPS postage, tracking, and support. Our 9×12 premium format gets 3× the response rate of standard postcards. No hidden fees, no setup charges, no surprise costs.
@@ -37,7 +37,7 @@ export default function PricingPage() {
               title: 'EDDM 9×12 Postcards',
               subtitle: 'Every Door Direct Mail',
               tag: 'Best for: Maximum impact, premium local advertising',
-              price: '$1.45/home',
+              price: '$1.99/home',
               bullets: ['Design, printing, USPS postage', '9×12 premium format (3× response)', 'Every home on carrier route', '500-2000 homes per route'],
               featured: true,
             },
@@ -116,7 +116,7 @@ export default function PricingPage() {
             {
               name: 'Starter',
               desc: 'Test 9×12 EDDM on a single route',
-              price: '$1.45',
+              price: '$1.99',
               example: '$725 for 500 homes (1 route)',
               features: ['Single route, single mailing', 'Design, print, postage included', 'Campaign tracking + QR code', 'Email support'],
               featured: false,
@@ -279,8 +279,8 @@ export default function PricingPage() {
               a: "Three reasons: (1) 9×12 gets 3× the response rate because it stands out in the mailbox — it feels important, not like junk mail. (2) USPS EDDM postage is a flat rate regardless of size, so 9×12 costs the same to mail. (3) You get more ad space to tell your story, show before/after photos, and build trust. The premium pricing pays for itself in response.",
             },
             {
-              q: "Why is 9×12 EDDM $1.45/home?",
-              a: "Our cost to fulfill a 9×12 mailing is ~$0.52/piece (postage $0.247, premium 16pt printing ~$0.18, lettershop bundling ~$0.06, lettershop overhead ~$0.03, design amortization ~$0.02). That means at $1.45/home we maintain roughly 64% margin to cover operations, customer success, design labor, and reinvestment in the business. This also leaves room for volume discounts at 2,000+ homes and for quality fulfillment at any volume.",
+              q: "Why is 9×12 EDDM $1.99/home?",
+              a: "Our cost to fulfill a 9×12 mailing is ~$0.52/piece (postage $0.247, premium 16pt printing ~$0.18, lettershop bundling ~$0.06, lettershop overhead ~$0.03, design amortization ~$0.02). That means at $1.99/home we maintain roughly 74% margin to cover operations, customer success, design labor, and reinvestment in the business. This also leaves room for volume discounts at 2,000+ homes and for quality fulfillment at any volume.",
             },
             {
               q: 'Why is targeted list pricing $0.65/home?',

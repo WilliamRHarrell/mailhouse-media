@@ -9,7 +9,7 @@ Real unit economics with:
 - Design costs and amortization
 - Lettershop costs (Path B)
 - 4 product lines modeled:
-  - EDDM 9×12 postcards ($1.45/home, ~64% margin)
+  - EDDM 9×12 postcards ($1.99/home, ~74% margin)
   - Targeted demographic lists ($0.65/home, ~60% margin)
   - AI Event Targeting ($0.75/home, ~65% margin)
   - Print Broker (future expansion with 4over.com)
@@ -25,14 +25,14 @@ Interactive calculator with:
 
 ### 3. **Updated All Pricing Across Site**
 Fixed catastrophic $0.06/home errors:
-- Homepage: $1.45/home (was $0.06)
-- Pricing page: 9×12 at $1.45, targeted lists at $0.65, AI targeting at $0.75
+- Homepage: $1.99/home (was $0.06)
+- Pricing page: 9×12 at $1.99, targeted lists at $0.65, AI targeting at $0.75
 - FAQ sections updated with real math
 - ROI examples adjusted (5-9% response → 10-36× ROI, realistic)
 - Volume discounts (10% at 2,000+ homes)
 
 ### 4. **Realistic Unit Economics**
-**EDDM 9×12 at $1.45/home:**
+**EDDM 9×12 at $1.99/home:**
 - USPS postage: $0.247
 - Printing (9×12): ~$0.18
 - Lettershop: ~$0.09

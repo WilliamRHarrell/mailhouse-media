@@ -33,7 +33,7 @@ export default function TargetedListsPage() {
             </p>
             <div style={{ display: 'flex', gap: 24, marginTop: 16 }}>
               <div>
-                <div style={statNum}>$1.45</div>
+                <div style={statNum}>$1.99</div>
                 <div style={statLabel}>Per home</div>
               </div>
               <div>
@@ -129,7 +129,7 @@ export default function TargetedListsPage() {
             {[
               {
                 q: 'How do your targeted lists compare to EDDM?',
-                a: "EDDM delivers to every home on a carrier route (no filtering). Targeted lists use the same USPS data but filter down to specific demographics — so you pay more per home ($0.65 vs $1.45 for 9×12 EDDM), but you only mail to addresses that match your criteria. EDDM is better for broad awareness, targeted lists are better for precision.",
+                a: "EDDM delivers to every home on a carrier route (no filtering). Targeted lists use the same USPS data but filter down to specific demographics — so you pay more per home ($0.65 vs $1.99 for 9×12 EDDM), but you only mail to addresses that match your criteria. EDDM is better for broad awareness, targeted lists are better for precision.",
               },
               {
                 q: 'How accurate are your targeted list filters?',
