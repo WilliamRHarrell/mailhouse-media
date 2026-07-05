@@ -156,7 +156,7 @@ export function getOurCostPerPiece(size: MailerSize, pieces: number): number {
 // ============================================================================
 
 export const CUSTOMER_PRICING = {
-  // These are Ryan's starting prices — adjust as needed
+  // These match the public-facing pricing tiers
   '6.5x9': {
     basePerHome: 0.85,
     minRouteCharge: 75, // minimum order value
@@ -170,8 +170,8 @@ export const CUSTOMER_PRICING = {
     minRouteCharge: 100,
   },
   '9x12': {
-    basePerHome: 1.45, // premium pricing for largest mailer
-    minRouteCharge: 150,
+    basePerHome: 1.99, // premium pricing — largest mailer
+    minRouteCharge: 200,
   },
 } as const;
 
