@@ -13,6 +13,10 @@ export default function PricingCalculator() {
   const [homes, setHomes] = React.useState<number>(1000)
   const [includeDesign, setIncludeDesign] = React.useState<boolean>(true)
   const [isFirstOrder, setIsFirstOrder] = React.useState<boolean>(true)
+  const [customerEmail, setCustomerEmail] = React.useState<string>('')
+  const [customerName, setCustomerName] = React.useState<string>('')
+  const [selectedZipCodes, setSelectedZipCodes] = React.useState<string[]>(['28301', '28303', '28304']) // Default NC routes
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
   const DESIGN_FEE = 150
   const FREE_DESIGN_THRESHOLD = 2500
@@ -177,11 +181,72 @@ export default function PricingCalculator() {
                   </ul>
                 </div>
 
-                <Link href="/check-coverage" style={ctaBtn}>
-                  See Available Routes →
-                </Link>
+                {/* Customer Info */}
+                <div style={customerFormSection}>
+                  <div style={customerFormTitle}>Ready to book? Enter your info:</div>
+                  <input
+                    type="text"
+                    placeholder="Full name"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    style={formInput}
+                  />
+                  <input
+                    type="email"
+                    placeholder="Business email"
+                    value={customerEmail}
+                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    style={formInput}
+                  />
+                  <button
+                    onClick={async () => {
+                      if (!customerName.trim() || !customerEmail.trim()) {
+                        alert('Please enter your name and email to proceed.')
+                        return
+                      }
+                      setIsLoading(true)
+                      try {
+                        const res = await fetch('/api/order', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            customer: { name: customerName, email: customerEmail },
+                            orderType: 'eddm_standard',
+                            designIncluded: includeDesign,
+                            isFirstOrder,
+                            routes: [{
+                              routeId: 'placeholder',
+                              homes,
+                              pricePerHome: activeTier.pricePerHome,
+                            }],
+                          }),
+                        })
+                        const data = await res.json()
+                        if (data.checkout_url) {
+                          window.location.href = data.checkout_url
+                        } else {
+                          alert(data.error || 'Failed to create checkout session')
+                        }
+                      } catch (err: any) {
+                        alert('Error: ' + err.message)
+                      } finally {
+                        setIsLoading(false)
+                      }
+                    }}
+                    disabled={isLoading}
+                    style={{ ...checkoutBtn, opacity: isLoading ? 0.6 : 1 }}
+                  >
+                    {isLoading ? 'Creating checkout…' : 'Secure Checkout →'}
+                  </button>
+                  <div style={checkoutSub}>
+                    Stripe payment · Cancel anytime before payment · Invoice emailed
+                  </div>
+                </div>
+
                 <div style={ctaSub}>
-                  No commitment. We'll walk you through everything.
+                  <Link href="/check-coverage" style={{ color: 'var(--signal-600)', fontWeight: 600 }}>
+                    Or browse routes near you →
+                  </Link>
                 </div>
               </div>
             </div>
@@ -759,4 +824,54 @@ if (typeof window !== 'undefined') {
     Object.assign(calcGrid, { gridTemplateColumns: '1fr' })
     Object.assign(quoteContainer, { position: 'static' })
   }
+}
+
+// Checkout form styles
+const customerFormSection: React.CSSProperties = {
+  marginTop: 'var(--space-6)',
+  paddingTop: 'var(--space-6)',
+  borderTop: '1px solid var(--border-hairline)',
+}
+
+const customerFormTitle: React.CSSProperties = {
+  fontFamily: 'var(--font-body)',
+  fontSize: 'var(--fs-body)',
+  fontWeight: 600,
+  color: 'var(--text-strong)',
+  marginBottom: 'var(--space-4)',
+}
+
+const formInput: React.CSSProperties = {
+  width: '100%',
+  padding: 'var(--space-3) var(--space-4)',
+  fontSize: 'var(--fs-body)',
+  fontFamily: 'var(--font-body)',
+  border: '1px solid var(--border-strong)',
+  borderRadius: 'var(--radius-sm)',
+  background: 'var(--paper-50)',
+  marginBottom: 'var(--space-3)',
+}
+
+const checkoutBtn: React.CSSProperties = {
+  width: '100%',
+  padding: 'var(--space-4)',
+  fontSize: 'var(--fs-body-lg)',
+  fontWeight: 700,
+  fontFamily: 'var(--font-display)',
+  background: 'var(--signal)',
+  color: '#fff',
+  border: 'none',
+  borderRadius: 'var(--radius-md)',
+  cursor: 'pointer',
+  marginTop: 'var(--space-4)',
+  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+  transition: 'all 0.2s ease',
+}
+
+const checkoutSub: React.CSSProperties = {
+  fontFamily: 'var(--font-body)',
+  fontSize: 'var(--fs-caption)',
+  color: 'var(--text-muted)',
+  textAlign: 'center',
+  marginTop: 'var(--space-2)',
 }
