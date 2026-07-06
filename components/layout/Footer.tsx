@@ -11,7 +11,7 @@ export function Footer() {
               Why Choose Mailhouse Media
             </div>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: 15, lineHeight: 1.65, color: 'var(--text-body)', margin: 0, maxWidth: 560 }}>
-              <strong style={{ color: 'var(--text-strong)' }}>Most local businesses waste thousands on Facebook and Google ads that get ignored.</strong> With Mailhouse Media's EDDM service, you skip the digital clutter and put your offer directly in front of potential customers — in their mailbox. Design, printing, and USPS postage all included. Track every response with our unique QR code system. Starting at just $0.06 per home.
+              <strong style={{ color: 'var(--text-strong)' }}>Most local businesses waste thousands on Facebook and Google ads that get ignored.</strong> With Mailhouse Media's EDDM service, you skip the digital clutter and put your offer directly in front of potential customers — in their mailbox. Design, printing, and USPS postage all included. Track every response with our unique QR code system. Starting at just $1.99 per home.
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
@@ -19,7 +19,7 @@ export function Footer() {
               { big: '5-9%', label: 'Avg response rate' },
               { big: '100%', label: 'Of every route delivered' },
               { big: '48hr', label: 'Design turnaround' },
-              { big: '$0.06', label: 'Per home all-in' },
+              { big: '$1.99', label: 'Per home all-in' },
             ].map((s) => (
               <div key={s.label}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 'var(--fs-h2)', color: 'var(--signal-500)', lineHeight: 1, letterSpacing: '-0.02em' }}>
@@ -83,10 +83,9 @@ export function Footer() {
             </p>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--text-on-ink-muted)', lineHeight: 1.7 }}>
               <strong style={{ color: 'var(--paper-100)' }}>Contact:</strong><br />
-              ryan@ryanharrell.ai<br />
-              317-671-7278<br />
-              4145 Applecross Dr<br />
-              Fayetteville, NC 28314
+              hello@mailhousemedia.com<br />
+              5439 Yadkin Rd STE 112<br />
+              Fayetteville, NC 28303
             </div>
           </div>
 
